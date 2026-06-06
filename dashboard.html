@@ -1,0 +1,2646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TPM Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#080a0f;--bg2:#0e1117;--bg3:#141820;--bg4:#1c2230;--bg5:#232c3d;
+  --border:#1e2637;--border2:#2a3650;--border3:#3a4d6e;
+  --text:#dce4f5;--text2:#7d8fa8;--text3:#404e65;--text4:#2a3548;
+  --accent:#5b9cf6;--accent-dim:#1a2d52;--accent-glow:rgba(91,156,246,0.12);
+  --green:#34d399;--green-dim:#0a2519;
+  --amber:#fbbf24;--amber-dim:#271d05;
+  --red:#f87171;--red-dim:#200d0d;
+  --purple:#a78bfa;--purple-dim:#1a1235;
+  --teal:#2dd4bf;--teal-dim:#062220;
+  --r:8px;--rl:14px;--rxl:20px;
+  --font:'Syne',sans-serif;--mono:'DM Mono',monospace;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;overflow:hidden;}
+.app{display:grid;grid-template-columns:220px 1fr;height:100vh;}
+
+/* ── Sidebar ── */
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.sb-logo{padding:22px 18px 18px;border-bottom:1px solid var(--border);}
+.sb-logo-mark{font-size:11px;font-weight:700;letter-spacing:0.14em;color:var(--accent);text-transform:uppercase;}
+.sb-logo-name{font-size:16px;font-weight:700;margin-top:4px;color:var(--text);}
+.sb-logo-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.sb-nav{padding:10px 10px;flex:1;overflow-y:auto;}
+.sb-section{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text4);padding:14px 8px 6px;}
+.nav-btn{width:100%;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--r);border:1px solid transparent;background:none;cursor:pointer;font-family:var(--font);font-size:13px;color:var(--text2);text-align:left;transition:all 0.12s;margin-bottom:1px;}
+.nav-btn:hover{background:var(--bg3);color:var(--text);border-color:var(--border);}
+.nav-btn.active{background:var(--accent-glow);color:var(--accent);border-color:rgba(91,156,246,0.2);}
+.nav-btn svg{width:15px;height:15px;flex-shrink:0;opacity:0.6;}
+.nav-btn.active svg{opacity:1;}
+.nav-badge{margin-left:auto;font-size:10px;background:var(--accent-dim);color:var(--accent);padding:1px 6px;border-radius:20px;font-weight:600;}
+.sb-footer{padding:14px 14px;border-top:1px solid var(--border);}
+.ollama-status{display:flex;align-items:center;gap:8px;font-size:12px;}
+.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.dot-on{background:var(--green);box-shadow:0 0 8px var(--green);}
+.dot-off{background:var(--red);}
+.dot-pulse{background:var(--amber);animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.model-name{font-size:10px;color:var(--text3);margin-top:4px;font-family:var(--mono);}
+
+/* ── Main ── */
+.main{overflow-y:auto;overflow-x:hidden;}
+.page{display:none;padding:28px 28px;min-height:100%;}
+.page.active{display:block;}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:26px;}
+.ph-left h1{font-size:22px;font-weight:700;}
+.ph-left p{font-size:13px;color:var(--text2);margin-top:4px;}
+
+/* ── Cards ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:20px;}
+.card-hd{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;}
+
+/* ── Metrics ── */
+.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
+.met{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:18px;}
+.met-n{font-size:30px;font-weight:700;line-height:1;margin-bottom:5px;}
+.met-l{font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);}
+.met-s{font-size:11px;margin-top:7px;}
+
+/* ── Grid ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.mt{margin-top:16px;}
+.mb{margin-bottom:16px;}
+.sep{height:1px;background:var(--border);margin:16px 0;}
+.flex{display:flex;align-items:center;}
+.gap{gap:10px;}
+.gap6{gap:6px;}
+.ml{margin-left:auto;}
+
+/* ── Buttons ── */
+.btn{padding:8px 16px;border-radius:var(--r);border:none;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;transition:all 0.12s;white-space:nowrap;}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-p{background:var(--accent);color:#fff;}
+.btn-p:hover:not(:disabled){background:#4a8ae0;}
+.btn-g{background:transparent;color:var(--text2);border:1px solid var(--border2);}
+.btn-g:hover:not(:disabled){background:var(--bg3);color:var(--text);border-color:var(--border3);}
+.btn-green{background:var(--green-dim);color:var(--green);border:1px solid rgba(52,211,153,0.2);}
+.btn-green:hover:not(:disabled){background:rgba(52,211,153,0.12);}
+.btn-sm{padding:5px 11px;font-size:12px;}
+.btn-xs{padding:3px 8px;font-size:11px;}
+.btn-danger{background:var(--red-dim);color:var(--red);border:1px solid rgba(248,113,113,0.2);}
+
+/* ── Inputs ── */
+input,select,textarea{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:13px;padding:9px 12px;width:100%;outline:none;transition:border 0.15s;}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);}
+textarea{resize:vertical;line-height:1.6;}
+select option{background:var(--bg3);}
+label{font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:5px;}
+.field{margin-bottom:14px;}
+
+/* ── Table ── */
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);padding:9px 14px;border-bottom:1px solid var(--border);text-align:left;}
+.tbl td{padding:11px 14px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:rgba(255,255,255,0.02);}
+
+/* ── Pills ── */
+.pill{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
+.p-new{background:var(--accent-dim);color:var(--accent);}
+.p-applied{background:var(--green-dim);color:var(--green);}
+.p-interview{background:var(--amber-dim);color:var(--amber);}
+.p-offer{background:var(--teal-dim);color:var(--teal);}
+.p-rejected{background:var(--red-dim);color:var(--red);}
+.p-master{background:var(--accent-dim);color:var(--accent);}
+.p-tailored{background:var(--green-dim);color:var(--green);}
+.p-generated{background:var(--purple-dim);color:var(--purple);}
+
+/* ── Pipeline bars ── */
+.pipe-stage{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.pipe-label{font-size:12px;font-weight:500;min-width:70px;text-align:right;color:var(--text2);}
+.pipe-track{flex:1;height:28px;background:var(--bg);border-radius:6px;overflow:hidden;position:relative;}
+.pipe-fill{height:100%;border-radius:6px;transition:width 0.6s ease;min-width:2px;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;}
+.pipe-count{font-size:14px;font-weight:700;white-space:nowrap;}
+.pipe-count-outside{font-size:14px;font-weight:700;margin-left:10px;white-space:nowrap;}
+
+/* ── Agent task progress ── */
+.task-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rl);padding:16px;margin-top:14px;}
+.task-step{font-size:13px;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.task-step .spin{width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.pbar-track{height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;}
+.pbar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--teal));transition:width 0.4s ease;}
+
+/* ── Tailor side-by-side ── */
+.tailor-split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;}
+.split-panel{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:16px;display:flex;flex-direction:column;}
+.split-hd{font-size:11px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.preview-text{font-family:var(--font);font-size:13px;line-height:1.7;color:var(--text);flex:1;overflow-y:auto;max-height:560px;padding:4px 0;}
+.preview-text h1{font-size:18px;font-weight:700;margin:0 0 2px;color:var(--text);}
+.preview-text h2{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;border-bottom:1px solid var(--border2);padding-bottom:3px;margin:14px 0 6px;color:var(--accent);}
+.preview-text p{margin:3px 0;font-size:13px;}
+.preview-text ul{margin:4px 0 4px 16px;padding:0;}
+.preview-text li{margin:2px 0;font-size:13px;}
+.preview-text strong{font-weight:600;color:var(--text);}
+.preview-text .contact-line{font-size:12px;color:var(--text2);margin-bottom:8px;}
+textarea.edit-box{font-family:var(--mono);font-size:12px;line-height:1.8;min-height:560px;flex:1;}
+.kw-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;}
+.kw{font-size:11px;padding:2px 8px;border-radius:4px;font-family:var(--mono);}
+.kw-match{background:var(--green-dim);color:var(--green);}
+.kw-miss{background:var(--bg4);color:var(--text3);}
+.score-strip{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin-bottom:12px;}
+.score-big{font-size:26px;font-weight:700;color:var(--accent);}
+.pbar2{flex:1;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.pbar2-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--green));transition:width 0.6s;}
+
+/* ── Digest ── */
+.digest-row{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:14px;transition:border 0.15s;}
+.digest-row:hover{border-color:var(--border2);}
+.d-score{font-size:22px;font-weight:700;min-width:34px;text-align:center;}
+.d-info{flex:1;min-width:0;}
+.d-co{font-size:14px;font-weight:600;}
+.d-role{font-size:12px;color:var(--text2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.d-reason{font-size:12px;color:var(--text3);margin-top:5px;font-style:italic;}
+.d-flag{font-size:11px;color:var(--amber);margin-top:3px;}
+.score-hi{color:var(--green);}
+.score-md{color:var(--amber);}
+.score-lo{color:var(--text3);}
+
+/* ── Directory cards ── */
+.dir-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+.dir-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:16px;cursor:pointer;transition:all 0.15s;position:relative;}
+.dir-card:hover{border-color:var(--border2);background:var(--bg4);}
+.dir-icon{width:38px;height:38px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:18px;}
+.dir-name{font-size:13px;font-weight:600;margin-bottom:4px;line-height:1.3;}
+.dir-meta{font-size:11px;color:var(--text3);}
+.dir-del{position:absolute;top:10px;right:10px;opacity:0;background:var(--red-dim);border:none;border-radius:4px;color:var(--red);cursor:pointer;padding:3px 6px;font-size:12px;transition:opacity 0.15s;}
+.dir-card:hover .dir-del{opacity:1;}
+
+/* ── Interview prep ── */
+.prep-content{font-size:13px;line-height:1.8;color:var(--text2);white-space:pre-wrap;font-family:var(--mono);}
+.prep-content h2{color:var(--accent);font-family:var(--font);font-size:14px;font-weight:600;margin:16px 0 8px;}
+
+/* ── Upload zone ── */
+.upload-zone{border:2px dashed var(--border2);border-radius:var(--rl);padding:28px;text-align:center;cursor:pointer;transition:all 0.15s;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:var(--accent-glow);}
+
+/* ── Modal ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rxl);padding:26px;min-width:440px;max-width:600px;max-height:85vh;overflow-y:auto;}
+.modal h2{font-size:17px;font-weight:700;margin-bottom:18px;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;}
+
+/* ── Notification ── */
+.notif{position:fixed;bottom:20px;right:20px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:12px 18px;font-size:13px;color:var(--text);z-index:300;transform:translateY(80px);opacity:0;transition:all 0.25s;max-width:320px;}
+.notif.show{transform:translateY(0);opacity:1;}
+.notif.success{border-left:3px solid var(--green);}
+.notif.error{border-left:3px solid var(--red);}
+
+/* ── Misc ── */
+.empty-state{text-align:center;padding:40px 20px;color:var(--text3);font-size:13px;}
+.empty-state .em-icon{font-size:32px;margin-bottom:12px;opacity:0.5;}
+.tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;letter-spacing:0.04em;}
+.filter-row{display:flex;gap:6px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
+.filter-btn{padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:12px;color:var(--text2);font-family:var(--font);transition:all 0.12s;}
+.filter-btn:hover{background:var(--bg3);color:var(--text);}
+.filter-btn.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+.status-sel{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 6px;font-size:11px;color:var(--text);font-family:var(--font);cursor:pointer;}
+.cmd-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;font-family:var(--mono);font-size:12px;color:var(--green);margin-top:8px;}
+/* ── Theme customizer ── */
+.theme-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.theme-row label{font-size:11px;color:var(--text2);min-width:85px;text-transform:none;letter-spacing:0;margin:0;font-weight:400;}
+.theme-ctl{display:flex;align-items:center;gap:6px;flex:1;}
+.theme-ctl input[type=color]{width:28px;height:28px;border:1px solid var(--border);border-radius:6px;padding:1px;cursor:pointer;background:none;flex-shrink:0;}
+.tc-hex{width:76px!important;font-family:var(--mono)!important;font-size:11px!important;padding:4px 6px!important;}
+.preset-chip{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg3);cursor:pointer;font-family:var(--font);font-size:12px;color:var(--text2);transition:all 0.12s;display:inline-flex;align-items:center;gap:7px;}
+.preset-chip:hover{background:var(--bg4);color:var(--text);border-color:var(--border2);}
+.preset-chip.active{background:var(--accent-dim);color:var(--accent);border-color:rgba(91,156,246,0.3);}
+.preset-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ══ SIDEBAR ══ -->
+<div class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-mark">TPM Command</div>
+    <div class="sb-logo-name">Devon O'Rourke</div>
+    <div class="sb-logo-sub">Job Search Command Center</div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-section">Overview</div>
+    <button class="nav-btn active" onclick="go('dashboard')">
+      <svg viewBox="0 0 15 15" fill="currentColor"><rect x="1" y="1" width="5" height="5" rx="1"/><rect x="9" y="1" width="5" height="5" rx="1"/><rect x="1" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
+      Dashboard
+    </button>
+    <div class="sb-section">Agents</div>
+    <button class="nav-btn" onclick="go('tailor')">
+      <svg viewBox="0 0 15 15" fill="currentColor"><path d="M2 3h11v1.5H2zm0 4h7v1.5H2zm0 4h9v1.5H2z"/></svg>
+      Resume Tailor
+    </button>
+    <button class="nav-btn" onclick="go('cover')">
+      <svg viewBox="0 0 15 15" fill="currentColor"><path d="M1 2h13v11H1V2zm0 0l6.5 5.5L14 2"/></svg>
+      Cover Letter
+    </button>
+    <button class="nav-btn" onclick="go('interview')">
+      <svg viewBox="0 0 15 15" fill="currentColor"><circle cx="7.5" cy="5" r="3" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M1 14c0-3.3 2.9-6 6.5-6s6.5 2.7 6.5 6" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+      Interview Prep
+    </button>
+    <button class="nav-btn" onclick="go('digest')">
+      <svg viewBox="0 0 15 15" fill="currentColor"><circle cx="7.5" cy="7.5" r="6" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M7.5 4v3.5l2.5 1.5" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+      Job Digest
+      <span class="nav-badge" id="nb-digest" style="display:none">0</span>
+    </button>
+    <div class="sb-section">Jobs & Files</div>
+    <button class="nav-btn" onclick="go('tracker')">
+      <svg viewBox="0 0 15 15" fill="currentColor"><path d="M1 3h13v1.5H1zm0 4h13v1.5H1zm0 4h13v1.5H1z" opacity=".4"/><rect x="1" y="3" width="2.5" height="1.5"/><rect x="1" y="7" width="2.5" height="1.5"/><rect x="1" y="11" width="2.5" height="1.5"/></svg>
+      Applications
+    </button>
+    <button class="nav-btn" onclick="go('resumes')">
+      <svg viewBox="0 0 15 15" fill="currentColor"><path d="M3 1h6.5L12 3.5V14H3V1zm6.5 0v2.5H12"/></svg>
+      Resume Library
+    </button>
+    <button class="nav-btn" onclick="go('covers-lib')">
+      <svg viewBox="0 0 15 15" fill="currentColor"><path d="M1 2h13v11H1V2zm0 0l6.5 5.5L14 2"/></svg>
+      Cover Letters
+    </button>
+    <div class="sb-section">Tools</div>
+    <button class="nav-btn" onclick="go('chat')">
+      <svg viewBox="0 0 15 15" fill="currentColor"><path d="M1 1h13v9H8l-4 4V10H1V1z" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+      AI Chat
+    </button>
+    <button class="nav-btn" onclick="go('agents')">
+      <span>🤖</span>
+      Agents
+    </button>
+    <button class="nav-btn" onclick="go('admin')">
+      <svg viewBox="0 0 15 15" fill="currentColor"><path d="M1 3h13M1 7h10M1 11h7" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+      Admin / Code
+    </button>
+    <button class="nav-btn" onclick="go('theme')">
+      <svg viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="7.5" cy="7.5" r="5.5"/><path d="M7.5 2v11M2 7.5h11" opacity=".3"/><circle cx="7.5" cy="7.5" r="2" fill="currentColor" opacity=".5"/></svg>
+      Theme
+    </button>
+  </div>
+  <div class="sb-footer">
+    <div class="ollama-status">
+      <div class="status-dot dot-pulse" id="ollama-dot"></div>
+      <span id="ollama-label" style="font-size:12px;color:var(--text2)">Checking Ollama...</span>
+    </div>
+    <div class="model-name" id="model-label">—</div>
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+
+<!-- ─ DASHBOARD ─ -->
+<div id="page-dashboard" class="page active">
+  <div class="ph">
+    <div class="ph-left"><h1>Command Center</h1><p>Your TPM job search at a glance</p></div>
+    <div class="flex gap">
+      <button class="btn btn-g btn-sm" onclick="runScraper()">Run scraper</button>
+      <button class="btn btn-p btn-sm" onclick="runScout()">Score new jobs</button>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="met"><div class="met-n" id="m-total" style="color:var(--accent)">—</div><div class="met-l">Total found</div><div class="met-s" style="color:var(--text3)" id="m-today-sub">Run scraper</div></div>
+    <div class="met"><div class="met-n" id="m-new" style="color:var(--text)">—</div><div class="met-l">New today</div><div class="met-s" style="color:var(--text3)">last scrape</div></div>
+    <div class="met"><div class="met-n" id="m-applied" style="color:var(--green)">—</div><div class="met-l">Applied</div><div class="met-s" id="m-rate" style="color:var(--text3)">— response rate</div></div>
+    <div class="met"><div class="met-n" id="m-interview" style="color:var(--amber)">—</div><div class="met-l">Interviews</div><div class="met-s" style="color:var(--text3)">active</div></div>
+    <div class="met"><div class="met-n" id="m-offer" style="color:var(--teal)">—</div><div class="met-l">Offers</div><div class="met-s" style="color:var(--text3)">in pipeline</div></div>
+  </div>
+
+  <div id="dupe-warning" style="display:none;background:var(--amber-dim);border:1px solid rgba(251,191,36,0.2);border-radius:var(--r);padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--text2);"></div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-hd">Application pipeline</div>
+      <div id="funnel" style="padding:4px 0 8px;"></div>
+      <div class="sep"></div>
+      <div class="card-hd">Scraper status</div>
+      <div class="cmd-box">$ python server.py &nbsp;→&nbsp; runs everything at localhost:5050</div>
+      <div id="scrape-task" style="display:none" class="task-card">
+        <div class="task-step"><div class="spin"></div><span id="scrape-step">Starting...</span></div>
+        <div class="pbar-track mt"><div class="pbar-fill" id="scrape-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd">Quick actions</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn btn-p" onclick="go('tailor')" style="text-align:left;justify-content:flex-start;display:flex;gap:10px;align-items:center"><span>⚡</span>Tailor resume for a job</button>
+        <button class="btn btn-g" onclick="go('cover')" style="text-align:left;justify-content:flex-start;display:flex;gap:10px;align-items:center"><span>✉</span>Generate cover letter</button>
+        <button class="btn btn-g" onclick="go('interview')" style="text-align:left;justify-content:flex-start;display:flex;gap:10px;align-items:center"><span>🎯</span>Prep for interview</button>
+        <button class="btn btn-g" onclick="go('digest')" style="text-align:left;justify-content:flex-start;display:flex;gap:10px;align-items:center"><span>☀</span>View job digest</button>
+        <button class="btn btn-g" onclick="runHealer('Google')" style="text-align:left;justify-content:flex-start;display:flex;gap:10px;align-items:center"><span>🔧</span>Auto-fix Google scraper</button>
+        <button class="btn btn-g" onclick="runHealer('')" style="text-align:left;justify-content:flex-start;display:flex;gap:10px;align-items:center"><span>🔧</span>Auto-fix all scrapers</button>
+        <button class="btn btn-g" onclick="go('tracker')" style="text-align:left;justify-content:flex-start;display:flex;gap:10px;align-items:center"><span>+</span>Log new application</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt">
+    <div class="flex gap mb"><div class="card-hd" style="margin:0">Recent applications</div><button class="btn btn-g btn-sm ml" onclick="go('tracker')">View all</button></div>
+    <table class="tbl"><thead><tr><th>Company</th><th>Role</th><th>Date</th><th>Status</th><th></th></tr></thead>
+    <tbody id="dash-tbody"></tbody></table>
+  </div>
+</div>
+
+<!-- ─ RESUME TAILOR ─ -->
+<div id="page-tailor" class="page">
+  <div class="ph"><div class="ph-left"><h1>Resume Tailor</h1><p>Paste a job URL — your agents rewrite, you review and export</p></div></div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-hd">Job posting</div>
+      <div class="field"><label>Job URL</label><input id="t-url" placeholder="https://careers.google.com/jobs/..."></div>
+      <div class="field"><label>Master resume</label>
+        <select id="t-resume"><option value="">Select master resume...</option></select>
+      </div>
+      <div class="field"><label>Agent notes (optional)</label><textarea id="t-notes" rows="2" placeholder="Emphasize telecom, tone down lab testing..."></textarea></div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px;padding:10px 12px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border);">
+        <span style="font-size:12px;color:var(--text2);">Quality</span>
+        <select id="t-quality" onchange="setTailorModel(this.value)" style="flex:1;font-size:12px;">
+          <option value="fast">⚡ Fast — llama3.1:8b (extraction) + qwen2.5:14b (writing)</option>
+          <option value="mid" selected>🎯 Balanced — deepseek-r1:14b (analysis) + qwen2.5:14b (writing)</option>
+          <option value="hq">💎 Best — deepseek-r1:14b (analysis) + llama3.1:70b (writing)</option>
+        </select>
+      </div>
+      <button class="btn btn-p" style="width:100%" id="t-btn" onclick="runTailor()">Generate tailored resume</button>
+      <div id="t-task" style="display:none" class="task-card">
+        <div class="task-step"><div class="spin"></div><span id="t-step">Starting...</span></div>
+        <div class="pbar-track mt"><div class="pbar-fill" id="t-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd">Analysis</div>
+      <div id="t-analysis-empty" style="color:var(--text3);font-size:13px">Paste a URL and generate to see keyword analysis.</div>
+      <div id="t-analysis" style="display:none">
+        <div class="score-strip">
+          <div><div class="score-big" id="t-score">—</div><div style="font-size:11px;color:var(--text3)">Match score</div></div>
+          <div class="pbar2"><div class="pbar2-fill" id="t-score-bar" style="width:0%"></div></div>
+        </div>
+        <div class="card-hd">Keywords matched</div>
+        <div class="kw-row" id="t-kw"></div>
+        <div class="sep"></div>
+        <div class="card-hd">Role snapshot</div>
+        <div id="t-snapshot" style="font-size:13px;color:var(--text2);line-height:1.7"></div>
+      </div>
+    </div>
+  </div>
+  <div id="t-split" style="display:none">
+    <div class="flex gap mt mb">
+      <span style="font-size:14px;font-weight:600">Side-by-side review</span>
+      <div class="ml flex gap">
+        <button class="btn btn-g btn-sm" onclick="copyTailoredRich()">Copy rich text</button>
+        <button class="btn btn-green btn-sm" onclick="saveTailored()">Save to library</button>
+        <button class="btn btn-p btn-sm" onclick="openTailoredFormatted()">Open formatted ↗</button>
+      </div>
+    </div>
+    <div class="tailor-split">
+      <div class="split-panel">
+        <div class="split-hd">Agent output <div id="t-pulse" style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:blink 1s infinite;display:none"></div></div>
+        <div class="preview-text" id="t-preview">Waiting for agent...</div>
+      </div>
+      <div class="split-panel">
+        <div class="split-hd">Your edit</div>
+        <textarea class="edit-box" id="t-edit" spellcheck="true" oninput="syncPreview('t-edit','t-preview')"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─ COVER LETTER ─ -->
+<div id="page-cover" class="page">
+  <div class="ph"><div class="ph-left"><h1>Cover Letter</h1><p>Agent writes a tailored cover letter — you review and save</p></div></div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-hd">Job details</div>
+      <div class="field"><label>Job URL (optional)</label><input id="cl-url" placeholder="https://..."></div>
+      <div class="field"><label>Company</label><input id="cl-co" placeholder="Google"></div>
+      <div class="field"><label>Role</label><input id="cl-role" placeholder="Senior Technical Program Manager"></div>
+      <div class="field"><label>Tone notes (optional)</label><textarea id="cl-notes" rows="2" placeholder="More conversational, emphasize telecom background..."></textarea></div>
+      <button class="btn btn-p" style="width:100%" id="cl-btn" onclick="runCover()">Generate cover letter</button>
+      <div id="cl-task" style="display:none" class="task-card">
+        <div class="task-step"><div class="spin"></div><span id="cl-step">Starting...</span></div>
+        <div class="pbar-track mt"><div class="pbar-fill" id="cl-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd">Tips</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.8">
+        Your cover letter agent is tuned to Devon's profile:<br><br>
+        <span style="color:var(--accent)">✓</span> Opens with a strong hook tied to your E2E architecture background<br>
+        <span style="color:var(--accent)">✓</span> Weaves in telecom, infrastructure, and UAT experience naturally<br>
+        <span style="color:var(--accent)">✓</span> Closes with a confident CTA<br>
+        <span style="color:var(--accent)">✓</span> Mirrors the language from the job posting<br>
+        <span style="color:var(--accent)">✓</span> Never uses generic AI filler phrases<br>
+      </div>
+    </div>
+  </div>
+  <div id="cl-split" style="display:none">
+    <div class="flex gap mt mb">
+      <span style="font-size:14px;font-weight:600">Review cover letter</span>
+      <div class="ml flex gap">
+        <button class="btn btn-g btn-sm" onclick="copyCoverRich()">Copy rich text</button>
+        <button class="btn btn-green btn-sm" onclick="saveCover()">Save to archive</button>
+        <button class="btn btn-p btn-sm" onclick="openCoverFormatted()">Open formatted ↗</button>
+      </div>
+    </div>
+    <div class="tailor-split">
+      <div class="split-panel">
+        <div class="split-hd">Agent output</div>
+        <div class="preview-text" id="cl-preview"></div>
+      </div>
+      <div class="split-panel">
+        <div class="split-hd">Your edit</div>
+        <textarea class="edit-box" id="cl-edit" spellcheck="true" oninput="syncPreview('cl-edit','cl-preview')"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─ INTERVIEW PREP ─ -->
+<div id="page-interview" class="page">
+  <div class="ph"><div class="ph-left"><h1>Interview Prep</h1><p>Get a full prep guide for any role in your pipeline</p></div></div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-hd">Target role</div>
+      <div class="field"><label>Company</label><input id="ip-co" placeholder="Google"></div>
+      <div class="field"><label>Role</label><input id="ip-role" placeholder="Senior Technical Program Manager"></div>
+      <div class="field"><label>Job URL (optional — improves accuracy)</label><input id="ip-url" placeholder="https://..."></div>
+      <button class="btn btn-p" style="width:100%" id="ip-btn" onclick="runInterview()">Generate prep guide</button>
+      <div id="ip-task" style="display:none" class="task-card">
+        <div class="task-step"><div class="spin"></div><span id="ip-step">Starting...</span></div>
+        <div class="pbar-track mt"><div class="pbar-fill" id="ip-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd">Past prep guides</div>
+      <div id="ip-history"><div class="empty-state"><div class="em-icon">🎯</div>No prep guides yet</div></div>
+    </div>
+  </div>
+  <div id="ip-result" style="display:none" class="card mt">
+    <div class="flex gap mb">
+      <div class="card-hd" style="margin:0" id="ip-result-title">Interview Prep</div>
+      <button class="btn btn-g btn-sm ml" onclick="copyPrep()">Copy guide</button>
+    </div>
+    <div class="prep-content" id="ip-content"></div>
+  </div>
+</div>
+
+<!-- ─ JOB DIGEST ─ -->
+<div id="page-digest" class="page">
+  <div class="ph">
+    <div class="ph-left"><h1>Job Digest</h1><p>Top TPM matches scored against your profile</p></div>
+    <div class="flex gap">
+      <button class="btn btn-g btn-sm" onclick="loadDigest()">Load from DB</button>
+      <button class="btn btn-sm" style="background:var(--bg4);color:var(--text2)" onclick="runDescribe()" title="Fetch full job descriptions to improve scoring accuracy">Fetch descriptions</button>
+      <button class="btn btn-p btn-sm" onclick="runScout()">Re-score all new jobs</button>
+    </div>
+  </div>
+  <div id="scout-task" style="display:none" class="card mb">
+    <div class="task-step"><div class="spin"></div><span id="scout-step">Scoring jobs...</span></div>
+    <div class="pbar-track mt"><div class="pbar-fill" id="scout-bar" style="width:0%"></div></div>
+  </div>
+  <div id="digest-list"><div class="empty-state"><div class="em-icon">☀</div>Run scout agent to score today's jobs</div></div>
+</div>
+
+<!-- ─ APPLICATIONS ─ -->
+<div id="page-tracker" class="page">
+  <div class="ph"><div class="ph-left"><h1>Applications</h1><p>Every job from new to offer</p></div>
+    <button class="btn btn-p btn-sm" onclick="openAddJob()">+ Add job</button>
+  </div>
+  <div class="filter-row">
+    <button class="filter-btn on" onclick="setAppFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setAppFilter('new',this)">New</button>
+    <button class="filter-btn" onclick="setAppFilter('applied',this)">Applied</button>
+    <button class="filter-btn" onclick="setAppFilter('interview',this)">Interview</button>
+    <button class="filter-btn" onclick="setAppFilter('offer',this)">Offer</button>
+    <button class="filter-btn" onclick="setAppFilter('rejected',this)">Rejected</button>
+    <div class="filter-btn" style="border:none;color:var(--text3);cursor:default">|</div>
+    <button class="filter-btn" onclick="setWorkFilter('Remote',this)">Remote</button>
+    <button class="filter-btn" onclick="setWorkFilter('Hybrid',this)">Hybrid</button>
+    <button class="filter-btn" onclick="setWorkFilter('On-site',this)">On-site</button>
+    <div class="filter-btn" style="border:none;color:var(--text3);cursor:default">|</div>
+    <button class="filter-btn" onclick="setLocFilter('ma',this)" title="MA / Boston / Remote">★ MA / Remote</button>
+    <button class="filter-btn" id="salary-filter-btn" onclick="toggleSalaryFilter(this)" title="Show only jobs with salary ≥ $130k">💰 Salary known</button>
+    <input style="width:160px;margin-left:auto" placeholder="Search company, role..." id="app-q" oninput="loadApps()">
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+    <span style="font-size:11px;color:var(--text3)">Sort by:</span>
+    <span id="sort-indicator" style="font-size:11px;color:var(--accent);font-family:var(--mono)">found_date ▼</span>
+    <button class="btn btn-xs btn-g" onclick="bulkDeleteOld()" style="margin-left:auto" title="Delete jobs older than 30 days with status=new">Prune old new-jobs</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 380px;gap:14px;align-items:start;">
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="tbl">
+        <thead><tr>
+          <th onclick="sortApps('company')" style="cursor:pointer;user-select:none">Company <span id="sort-ind-company"></span></th>
+          <th onclick="sortApps('title')" style="cursor:pointer;user-select:none">Role / Level <span id="sort-ind-title"></span></th>
+          <th onclick="sortApps('loc_priority')" style="cursor:pointer;user-select:none" title="Sort: MA/Boston first, then Remote/Hybrid, then other US">Location ★ <span id="sort-ind-loc_priority" style="color:var(--accent)">▼</span></th>
+          <th onclick="sortApps('work_type')" style="cursor:pointer;user-select:none">Work type <span id="sort-ind-work_type"></span></th>
+          <th onclick="sortApps('salary_min')" style="cursor:pointer;user-select:none">Salary <span id="sort-ind-salary_min"></span></th>
+          <th onclick="sortApps('found_date')" style="cursor:pointer;user-select:none">Found <span id="sort-ind-found_date"></span></th>
+          <th onclick="sortApps('score')" style="cursor:pointer;user-select:none">Score <span id="sort-ind-score"></span></th>
+          <th>Status</th><th></th>
+        </tr></thead>
+        <tbody id="apps-tbody"></tbody>
+      </table>
+    </div>
+    <!-- Preview panel -->
+    <div id="job-preview" class="card" style="display:none;position:sticky;top:20px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+        <div style="flex:1">
+          <div id="pv-title" style="font-size:15px;font-weight:600;line-height:1.3"></div>
+          <div id="pv-company" style="font-size:12px;color:var(--text2);margin-top:3px"></div>
+        </div>
+        <button class="btn btn-g btn-xs" onclick="closePreview()">✕</button>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;" id="pv-tags"></div>
+      <a id="pv-url" href="#" target="_blank" class="btn btn-p btn-sm" style="display:block;text-align:center;margin-bottom:12px;text-decoration:none;">
+        Open full job posting ↗
+      </a>
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <button class="btn btn-g btn-sm" style="flex:1" onclick="tailorFromPreview()">Tailor resume</button>
+        <button class="btn btn-g btn-sm" style="flex:1" onclick="prepFromPreview()">Interview prep</button>
+      </div>
+      <div class="sep"></div>
+      <div class="card-hd">Description</div>
+      <div id="pv-desc" style="font-size:12px;color:var(--text2);line-height:1.7;max-height:300px;overflow-y:auto;white-space:pre-wrap;"></div>
+      <div class="sep"></div>
+      <div class="card-hd">Notes</div>
+      <textarea id="pv-notes" rows="3" style="font-size:12px;" placeholder="Add notes..." oninput="saveNotes()"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ─ RESUME LIBRARY ─ -->
+<div id="page-resumes" class="page">
+  <div class="ph">
+    <div class="ph-left"><h1>Resume Library</h1><p>Master and tailored versions</p></div>
+    <div class="flex gap">
+      <input type="file" id="res-file-input" accept=".docx" style="display:none" onchange="uploadResume(this)">
+      <button class="btn btn-g btn-sm" onclick="document.getElementById('res-file-input').click()">Upload .docx</button>
+    </div>
+  </div>
+  <div class="dir-grid" id="resume-grid"></div>
+</div>
+
+<!-- ─ COVER LETTERS LIBRARY ─ -->
+<div id="page-covers-lib" class="page">
+  <div class="ph"><div class="ph-left"><h1>Cover Letter Archive</h1><p>All generated and uploaded cover letters</p></div></div>
+  <div class="dir-grid" id="cover-grid"></div>
+</div>
+
+
+<!-- ─ AI CHAT ─ -->
+<div id="page-chat" class="page">
+  <div class="ph">
+    <div class="ph-left"><h1>AI Chat</h1><p>Context-aware assistant — knows your profile and any open job</p></div>
+    <div class="flex gap">
+      <select id="chat-model" style="width:240px;font-size:12px;">
+        <option value="llama3.1:8b">⚡ llama3.1:8b (fast)</option>
+        <option value="qwen2.5:14b">🎯 qwen2.5:14b (balanced)</option>
+        <option value="deepseek-coder-v2:16b">💻 deepseek-coder-v2 (coding)</option>
+        <option value="deepseek-r1:14b">🧠 deepseek-r1:14b (reasoning)</option>
+        <option value="mistral:7b-instruct">⚡ mistral:7b (fast/precise)</option>
+        <option value="llama3.1:70b-instruct-q4_K_M">💎 llama3.1:70b (slow/best)</option>
+      </select>
+      <button class="btn btn-g btn-sm" onclick="clearChat()">Clear</button>
+    </div>
+  </div>
+  <div class="g2" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:0;">
+      <div id="chat-messages" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl) var(--rl) 0 0;padding:16px;min-height:400px;max-height:520px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;">
+        <div style="font-size:13px;color:var(--text3);text-align:center;padding:20px 0;">
+          Ask me anything about your job search, resume, interview prep, or coding.<br>
+          If you have a job open in the Applications tab, I already know about it.
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;background:var(--bg3);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--rl) var(--rl);padding:10px;">
+        <textarea id="chat-input" rows="2" placeholder="Ask anything... (Shift+Enter for new line, Enter to send)" style="flex:1;min-height:52px;max-height:120px;resize:none;border-radius:var(--r);font-size:13px;" onkeydown="chatKeydown(event)"></textarea>
+        <button class="btn btn-p" onclick="sendChat()" id="chat-send" style="align-self:flex-end;">Send</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd">Quick prompts</div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="quick-prompts">
+        <button class="btn btn-g btn-sm" style="text-align:left" onclick="quickPrompt(this.textContent)">Tailor talking points for the open job</button>
+        <button class="btn btn-g btn-sm" style="text-align:left" onclick="quickPrompt(this.textContent)">What interview questions will they ask?</button>
+        <button class="btn btn-g btn-sm" style="text-align:left" onclick="quickPrompt(this.textContent)">Write a cover letter opener for this role</button>
+        <button class="btn btn-g btn-sm" style="text-align:left" onclick="quickPrompt(this.textContent)">How does this role match my background?</button>
+        <button class="btn btn-g btn-sm" style="text-align:left" onclick="quickPrompt(this.textContent)">Suggest 3 questions to ask the interviewer</button>
+        <button class="btn btn-g btn-sm" style="text-align:left" onclick="quickPrompt(this.textContent)">Rewrite my top 3 resume bullets for this job</button>
+        <button class="btn btn-g btn-sm" style="text-align:left" onclick="quickPrompt('What Python code would help automate part of my job search?')">Help me automate something in my job search</button>
+        <button class="btn btn-g btn-sm" style="text-align:left" onclick="quickPrompt('Review the scraper.py file and suggest improvements')">Review my scraper code</button>
+      </div>
+      <div class="sep"></div>
+      <div class="card-hd">Active job context</div>
+      <div id="chat-job-ctx" style="font-size:12px;color:var(--text3);">No job selected — open a job in Applications to add context</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─ ADMIN / CODE ─ -->
+<div id="page-agents" class="page">
+  <div class="ph">
+    <div class="ph-left"><h1>Agents</h1><p>LinkedIn scraper, market trends, custom company targeting</p></div>
+  </div>
+
+  <div class="g2" style="align-items:start;gap:16px;">
+
+    <!-- LinkedIn Scraper -->
+    <div class="card">
+      <div class="card-hd">LinkedIn Scraper</div>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">
+        Logs into your LinkedIn account and scrapes the Jobs tab. 
+        Browser window will open — complete any 2FA prompts.
+        Requires <code style="font-size:11px;background:var(--bg3);padding:2px 6px;border-radius:4px;">C:\TPM\.env</code> with credentials.
+      </p>
+      <div class="field"><label>Results per query</label>
+        <input type="number" id="li-limit" value="30" min="10" max="100" style="width:80px;">
+      </div>
+      <button class="btn btn-p" style="width:100%" onclick="runLinkedIn()">Run LinkedIn Scraper</button>
+      <div id="li-task" style="display:none" class="task-card mt">
+        <div class="task-step"><div class="spin"></div><span id="li-step">Starting...</span></div>
+        <div class="pbar-track mt"><div class="pbar-fill" id="li-bar" style="width:0%"></div></div>
+      </div>
+      <div class="sep"></div>
+      <div style="font-size:12px;color:var(--text3);">
+        <strong>Setup:</strong> Create <code>C:\TPM\.env</code>:<br>
+        <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="58141116131d1c1116071d151911146521372d183d35393134763b3735">[email&#160;protected]</a><br>LINKEDIN_PASSWORD=yourpassword</code>
+      </div>
+    </div>
+
+    <!-- Market Trend Agent -->
+    <div class="card">
+      <div class="card-hd">Market Trend Agent</div>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">
+        Analyzes your job DB for keyword trends, salary data, location breakdown, and market insights.
+      </p>
+      <div class="field"><label>Look back (days)</label>
+        <select id="market-days">
+          <option value="7" selected>Last 7 days</option>
+          <option value="14">Last 14 days</option>
+          <option value="30">Last 30 days</option>
+        </select>
+      </div>
+      <button class="btn btn-p" style="width:100%" onclick="runMarket()">Analyze Market</button>
+      <div id="market-task" style="display:none" class="task-card mt">
+        <div class="task-step"><div class="spin"></div><span id="market-step">Analyzing...</span></div>
+        <div class="pbar-track mt"><div class="pbar-fill" id="market-bar" style="width:0%"></div></div>
+      </div>
+      <div id="market-report" style="display:none;margin-top:14px;"></div>
+    </div>
+
+  </div>
+
+  <!-- Custom Company Targets -->
+  <div class="card mt" style="margin-top:16px;">
+    <div class="card-hd">Custom Company Targets</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">
+      Add any company to your scrape list. The agent will find their career page and scrape it automatically.
+    </p>
+    <div class="flex gap mb">
+      <input type="text" id="target-input" placeholder="Wayfair, HubSpot, Akamai, Toast..." style="flex:1;font-size:13px;">
+      <button class="btn btn-p" onclick="addTargets()">Add Companies</button>
+    </div>
+    <div id="targets-list" style="margin-bottom:12px;"></div>
+    <div class="flex gap">
+      <button class="btn btn-g btn-sm" onclick="loadTargets()">Refresh list</button>
+      <button class="btn btn-p btn-sm" onclick="runCustomScrape('')">Scrape all custom targets</button>
+    </div>
+    <div id="custom-task" style="display:none" class="task-card mt">
+      <div class="task-step"><div class="spin"></div><span id="custom-step">Scraping...</span></div>
+      <div class="pbar-track mt"><div class="pbar-fill" id="custom-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+</div>
+
+<div id="page-admin" class="page">
+  <div class="ph">
+    <div class="ph-left"><h1>Code Workspace</h1><p>View, edit, and LLM-assist all project files — one-stop shop</p></div>
+    <div class="flex gap">
+      <button class="btn btn-g btn-sm" onclick="loadFileList()">Refresh files</button>
+    </div>
+  </div>
+
+  <!-- File browser + editor row -->
+  <div style="display:grid;grid-template-columns:220px 1fr;gap:14px;margin-bottom:16px;">
+
+    <!-- File list sidebar -->
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div style="padding:10px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text3);">Project files</div>
+      <div id="file-list" style="overflow-y:auto;max-height:500px;"></div>
+    </div>
+
+    <!-- Code editor -->
+    <div class="card" style="display:flex;flex-direction:column;gap:10px;">
+      <div class="flex gap">
+        <div style="font-size:14px;font-weight:600;" id="editor-filename">Select a file →</div>
+        <div class="ml flex gap">
+          <button class="btn btn-g btn-sm" onclick="loadFileIntoEditor(currentAdminFile)" id="editor-reload" style="display:none">↺ Reload</button>
+          <button class="btn btn-green btn-sm" onclick="saveFileDirectly()" id="editor-save" style="display:none">Save file</button>
+        </div>
+      </div>
+      <textarea id="code-editor" style="font-family:var(--mono);font-size:12px;line-height:1.6;min-height:460px;resize:vertical;tab-size:4;" placeholder="Select a file from the list to view and edit its code..." spellcheck="false" onkeydown="editorKeydown(event)"></textarea>
+      <div id="editor-status" style="font-size:11px;color:var(--text3);"></div>
+    </div>
+  </div>
+
+  <!-- LLM edit row -->
+  <div class="g2" style="align-items:start;">
+    <div class="card">
+      <div class="card-hd">LLM-assisted edit</div>
+      <div class="field"><label>File to edit</label>
+        <select id="admin-file" onchange="loadFileIntoEditor(this.value)">
+          <option value="">— select file —</option>
+          <option value="scraper.py">scraper.py</option>
+		  <!-- <option value="linkedin_scraper.py">linkedin_scraper.py</option> -->
+          <option value="ma_scraper.py">ma_scraper.py</option>
+          <option value="server.py">server.py</option>
+          <option value="dashboard.html">dashboard.html</option>
+          <option value="resume_agent.py">resume_agent.py</option>
+          <option value="scout_agent.py">scout_agent.py</option>
+          <option value="scraper_agent.py">scraper_agent.py</option>
+          <option value="tracker.py">tracker.py</option>
+          <option value="backfill.py">backfill.py</option>
+          <option value="profile.py">profile.py</option>
+          <option value="diagnose.py">diagnose.py</option>
+        </select>
+      </div>
+      <div class="field"><label>Instruction (plain English)</label>
+        <textarea id="admin-instruction" rows="4" placeholder="Examples:&#10;• Remove all international jobs — only keep US, remote, MA&#10;• Add $130k minimum salary filter&#10;• Fix the BuiltInBoston company name selector&#10;• Add a new quick prompt button to the chat page"></textarea>
+      </div>
+      <div class="flex gap mb" style="align-items:center;">
+        <label style="text-transform:none;font-size:12px;color:var(--text2);letter-spacing:0;">Model:</label>
+        <select id="admin-model" style="width:auto;flex:1;font-size:12px;">
+          <option value="deepseek-coder-v2:16b" selected>💻 deepseek-coder-v2 (code)</option>
+          <option value="qwen2.5:14b">🎯 qwen2.5:14b (balanced)</option>
+          <option value="deepseek-r1:14b">🧠 deepseek-r1:14b (reasoning)</option>
+          <option value="llama3.1:8b">⚡ llama3.1:8b (fast)</option>
+          <option value="llama3.1:70b-instruct-q4_K_M">💎 llama3.1:70b (slow/best)</option>
+        </select>
+      </div>
+      <button class="btn btn-p" style="width:100%" id="admin-btn" onclick="runLLMEdit()">Generate edit with LLM</button>
+      <div id="admin-task" style="display:none" class="task-card mt">
+        <div class="task-step"><div class="spin"></div><span id="admin-step">LLM analyzing file...</span></div>
+        <div class="pbar-track mt"><div class="pbar-fill" id="admin-bar" style="width:0%"></div></div>
+      </div>
+      <div class="sep"></div>
+      <div class="card-hd">Quick edits</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <button class="btn btn-g btn-sm" style="text-align:left" onclick="quickEdit('scraper.py','Remove all international jobs — only keep US locations, remote, and MA/Boston area. Filter in the save_jobs function.')">Remove international jobs</button>
+        <button class="btn btn-g btn-sm" style="text-align:left" onclick="quickEdit('scraper.py','Add a salary minimum filter — skip any job where salary_max is present and below 130000')">Add $130k salary floor</button>
+        <button class="btn btn-g btn-sm" style="text-align:left" onclick="quickEdit('ma_scraper.py','Fix the BuiltInBoston company name selector to use data-id=company-title span element')">Fix BuiltInBoston company names</button>
+        <button class="btn btn-g btn-sm" style="text-align:left" onclick="quickEdit('scraper.py','Add MA location preference scoring — boost score for jobs in Massachusetts or Boston by 2 points')">Boost MA jobs in scoring</button>
+        <button class="btn btn-g btn-sm" style="text-align:left" onclick="quickEdit('dashboard.html','Add a new quick prompt button in the chat page: Summarize all open jobs in one paragraph')">Add chat quick prompt</button>
+        <button class="btn btn-g btn-sm" style="text-align:left" onclick="quickEdit('server.py','Add a /api/admin/restart endpoint that restarts the scraper schedule')">Add scraper restart endpoint</button>
+      </div>
+    </div>
+
+    <!-- Diff viewer -->
+    <div class="card">
+      <div class="flex gap mb">
+        <div class="card-hd" id="diff-title" style="margin:0">Proposed changes</div>
+        <div class="ml flex gap" id="diff-actions" style="display:none!important;">
+          <button class="btn btn-green btn-sm" onclick="applyEdit()">✓ Apply</button>
+          <button class="btn btn-g btn-sm" onclick="discardEdit()">✗ Discard</button>
+          <button class="btn btn-g btn-sm" onclick="copyProposed()">Copy code</button>
+        </div>
+      </div>
+      <div id="diff-empty" style="color:var(--text3);font-size:13px;padding:8px 0;">Generate an edit to see the proposed changes here before applying.</div>
+      <div id="diff-content" style="display:none;">
+        <div class="flex gap mb">
+          <button class="btn btn-green btn-sm" onclick="applyEdit()">✓ Apply changes</button>
+          <button class="btn btn-g btn-sm" onclick="discardEdit()">✗ Discard</button>
+          <button class="btn btn-g btn-sm" onclick="copyProposed()">Copy new code</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600;letter-spacing:0.06em;">BEFORE</div>
+            <pre id="diff-before" style="font-family:var(--mono);font-size:11px;color:var(--text2);background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px;max-height:380px;overflow:auto;white-space:pre-wrap;word-break:break-all;"></pre>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--green);margin-bottom:6px;font-weight:600;letter-spacing:0.06em;">AFTER</div>
+            <pre id="diff-after" style="font-family:var(--mono);font-size:11px;color:var(--text);background:var(--bg3);border:1px solid rgba(52,211,153,0.25);border-radius:var(--r);padding:10px;max-height:380px;overflow:auto;white-space:pre-wrap;word-break:break-all;"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─ THEME ─ -->
+<div id="page-theme" class="page">
+  <div class="ph">
+    <div class="ph-left"><h1>Theme</h1><p>Customize colors, fonts, and branding — changes apply instantly</p></div>
+    <div class="flex gap">
+      <button class="btn btn-g btn-sm" onclick="resetTheme()">Reset to default</button>
+      <button class="btn btn-p btn-sm" onclick="exportThemeCSS()">Export CSS</button>
+    </div>
+  </div>
+
+  <!-- Presets -->
+  <div class="card mb">
+    <div class="card-hd">Presets</div>
+    <div id="theme-presets" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
+    <!-- Backgrounds -->
+    <div class="card">
+      <div class="card-hd">Backgrounds</div>
+      <div class="theme-row"><label>Base</label><div class="theme-ctl"><input type="color" id="tc-bg" onchange="setTV('--bg',this.value)"><input type="text" class="tc-hex" id="th-bg" oninput="setTV('--bg',this.value)"></div></div>
+      <div class="theme-row"><label>Surface</label><div class="theme-ctl"><input type="color" id="tc-bg2" onchange="setTV('--bg2',this.value)"><input type="text" class="tc-hex" id="th-bg2" oninput="setTV('--bg2',this.value)"></div></div>
+      <div class="theme-row"><label>Elevated</label><div class="theme-ctl"><input type="color" id="tc-bg3" onchange="setTV('--bg3',this.value)"><input type="text" class="tc-hex" id="th-bg3" oninput="setTV('--bg3',this.value)"></div></div>
+      <div class="theme-row"><label>Hover</label><div class="theme-ctl"><input type="color" id="tc-bg4" onchange="setTV('--bg4',this.value)"><input type="text" class="tc-hex" id="th-bg4" oninput="setTV('--bg4',this.value)"></div></div>
+    </div>
+
+    <!-- Text & Borders -->
+    <div class="card">
+      <div class="card-hd">Text & Borders</div>
+      <div class="theme-row"><label>Primary text</label><div class="theme-ctl"><input type="color" id="tc-text" onchange="setTV('--text',this.value)"><input type="text" class="tc-hex" id="th-text" oninput="setTV('--text',this.value)"></div></div>
+      <div class="theme-row"><label>Secondary</label><div class="theme-ctl"><input type="color" id="tc-text2" onchange="setTV('--text2',this.value)"><input type="text" class="tc-hex" id="th-text2" oninput="setTV('--text2',this.value)"></div></div>
+      <div class="theme-row"><label>Muted</label><div class="theme-ctl"><input type="color" id="tc-text3" onchange="setTV('--text3',this.value)"><input type="text" class="tc-hex" id="th-text3" oninput="setTV('--text3',this.value)"></div></div>
+      <div class="sep"></div>
+      <div class="theme-row"><label>Border</label><div class="theme-ctl"><input type="color" id="tc-border" onchange="setTV('--border',this.value)"><input type="text" class="tc-hex" id="th-border" oninput="setTV('--border',this.value)"></div></div>
+      <div class="theme-row"><label>Border strong</label><div class="theme-ctl"><input type="color" id="tc-border2" onchange="setTV('--border2',this.value)"><input type="text" class="tc-hex" id="th-border2" oninput="setTV('--border2',this.value)"></div></div>
+    </div>
+
+    <!-- Accents -->
+    <div class="card">
+      <div class="card-hd">Accent Colors</div>
+      <div class="theme-row"><label>Accent</label><div class="theme-ctl"><input type="color" id="tc-accent" onchange="setTV('--accent',this.value)"><input type="text" class="tc-hex" id="th-accent" oninput="setTV('--accent',this.value)"></div></div>
+      <div class="theme-row"><label>Green</label><div class="theme-ctl"><input type="color" id="tc-green" onchange="setTV('--green',this.value)"><input type="text" class="tc-hex" id="th-green" oninput="setTV('--green',this.value)"></div></div>
+      <div class="theme-row"><label>Amber</label><div class="theme-ctl"><input type="color" id="tc-amber" onchange="setTV('--amber',this.value)"><input type="text" class="tc-hex" id="th-amber" oninput="setTV('--amber',this.value)"></div></div>
+      <div class="theme-row"><label>Red</label><div class="theme-ctl"><input type="color" id="tc-red" onchange="setTV('--red',this.value)"><input type="text" class="tc-hex" id="th-red" oninput="setTV('--red',this.value)"></div></div>
+      <div class="theme-row"><label>Purple</label><div class="theme-ctl"><input type="color" id="tc-purple" onchange="setTV('--purple',this.value)"><input type="text" class="tc-hex" id="th-purple" oninput="setTV('--purple',this.value)"></div></div>
+      <div class="theme-row"><label>Teal</label><div class="theme-ctl"><input type="color" id="tc-teal" onchange="setTV('--teal',this.value)"><input type="text" class="tc-hex" id="th-teal" oninput="setTV('--teal',this.value)"></div></div>
+    </div>
+  </div>
+
+  <!-- Row 2: Fonts + Branding + Preview swatches -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:14px;">
+    <!-- Fonts -->
+    <div class="card">
+      <div class="card-hd">Typography</div>
+      <div class="field"><label>UI Font</label>
+        <select id="tc-font" onchange="setTV('--font',this.value)" style="font-size:12px;">
+          <option value="'Syne',sans-serif">Syne</option>
+          <option value="'Space Grotesk',sans-serif">Space Grotesk</option>
+          <option value="'Work Sans',sans-serif">Work Sans</option>
+          <option value="'Outfit',sans-serif">Outfit</option>
+          <option value="'Rubik',sans-serif">Rubik</option>
+          <option value="'Overpass',sans-serif">Overpass</option>
+          <option value="'Barlow',sans-serif">Barlow</option>
+          <option value="'Source Sans 3',sans-serif">Source Sans 3</option>
+          <option value="'Noto Sans',sans-serif">Noto Sans</option>
+          <option value="'JetBrains Mono',monospace">JetBrains Mono</option>
+        </select>
+      </div>
+      <div class="field"><label>Mono Font</label>
+        <select id="tc-mono" onchange="setTV('--mono',this.value)" style="font-size:12px;">
+          <option value="'DM Mono',monospace">DM Mono</option>
+          <option value="'JetBrains Mono',monospace">JetBrains Mono</option>
+          <option value="'Fira Code',monospace">Fira Code</option>
+          <option value="'IBM Plex Mono',monospace">IBM Plex Mono</option>
+          <option value="'Source Code Pro',monospace">Source Code Pro</option>
+        </select>
+      </div>
+      <div style="padding:10px;background:var(--bg3);border-radius:var(--r);margin-top:8px;">
+        <div style="font-size:14px;font-weight:600;">Heading preview</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:4px;">Body text in your chosen font</div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);margin-top:4px;">mono: code_preview()</div>
+      </div>
+    </div>
+
+    <!-- Branding -->
+    <div class="card">
+      <div class="card-hd">Sidebar Branding</div>
+      <div class="field"><label>Top label</label><input type="text" id="tc-logomark" value="TPM Command" oninput="setBranding()"></div>
+      <div class="field"><label>Name</label><input type="text" id="tc-logoname" value="Devon O'Rourke" oninput="setBranding()"></div>
+      <div class="field"><label>Subtitle</label><input type="text" id="tc-logosub" value="Job Search Command Center" oninput="setBranding()"></div>
+    </div>
+
+    <!-- Live swatch preview -->
+    <div class="card">
+      <div class="card-hd">Swatch Preview</div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;">
+        <div id="sw-accent" style="height:32px;border-radius:6px;background:var(--accent);" title="accent"></div>
+        <div id="sw-green" style="height:32px;border-radius:6px;background:var(--green);" title="green"></div>
+        <div id="sw-amber" style="height:32px;border-radius:6px;background:var(--amber);" title="amber"></div>
+        <div id="sw-red" style="height:32px;border-radius:6px;background:var(--red);" title="red"></div>
+        <div id="sw-purple" style="height:32px;border-radius:6px;background:var(--purple);" title="purple"></div>
+        <div id="sw-teal" style="height:32px;border-radius:6px;background:var(--teal);" title="teal"></div>
+      </div>
+      <div style="display:flex;gap:4px;margin-top:8px;">
+        <div style="flex:1;height:24px;border-radius:4px;background:var(--bg);" title="bg"></div>
+        <div style="flex:1;height:24px;border-radius:4px;background:var(--bg2);" title="bg2"></div>
+        <div style="flex:1;height:24px;border-radius:4px;background:var(--bg3);" title="bg3"></div>
+        <div style="flex:1;height:24px;border-radius:4px;background:var(--bg4);" title="bg4"></div>
+      </div>
+      <div style="margin-top:10px;">
+        <span class="pill p-new">new</span>
+        <span class="pill p-applied">applied</span>
+        <span class="pill p-interview">interview</span>
+        <span class="pill p-offer">offer</span>
+        <span class="pill p-rejected">rejected</span>
+      </div>
+      <div style="margin-top:10px;display:flex;gap:6px;">
+        <button class="btn btn-p btn-sm">Primary</button>
+        <button class="btn btn-g btn-sm">Ghost</button>
+        <button class="btn btn-green btn-sm">Green</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export area -->
+  <div class="card mt" id="theme-export" style="display:none;">
+    <div class="card-hd">Exported CSS</div>
+    <textarea id="theme-css-out" rows="12" readonly style="font-family:var(--mono);font-size:11px;line-height:1.6;"></textarea>
+    <div class="flex gap mt">
+      <button class="btn btn-g btn-sm" onclick="selectAllCSS()">Select all</button>
+      <span style="font-size:12px;color:var(--text3)">Paste this over the :root{...} block in dashboard.html</span>
+    </div>
+  </div>
+</div>
+
+</div><!-- end main -->
+</div><!-- end app -->
+
+<!-- ═ MODALS ═ -->
+<div class="modal-bg" id="add-job-modal">
+  <div class="modal">
+    <h2>Add application</h2>
+    <div class="field"><label>Company</label><input id="aj-co" placeholder="Google"></div>
+    <div class="field"><label>Role</label><input id="aj-role" placeholder="Technical Program Manager"></div>
+    <div class="field"><label>Location</label><input id="aj-loc" placeholder="Remote / Seattle WA"></div>
+    <div class="field"><label>Job URL</label><input id="aj-url" placeholder="https://..."></div>
+    <div class="field"><label>Source</label><input id="aj-src" placeholder="careers.google.com"></div>
+    <div class="field"><label>Status</label>
+      <select id="aj-status">
+        <option value="new">New</option><option value="applied">Applied</option>
+        <option value="interview">Interview</option><option value="offer">Offer</option>
+        <option value="rejected">Rejected</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-g" onclick="closeModal('add-job-modal')">Cancel</button>
+      <button class="btn btn-p" onclick="saveNewJob()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Notification -->
+<div class="notif" id="notif"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const API = 'http://localhost:5050';
+let appFilter = 'all';
+let currentTailoredText = '';
+let currentCoverText = '';
+let currentPrepText = '';
+
+// ── Notify ──
+function notify(msg, type='success') {
+  const n = document.getElementById('notif');
+  n.textContent = msg;
+  n.className = `notif ${type} show`;
+  setTimeout(()=>n.classList.remove('show'), 3500);
+}
+
+// ── Nav ──
+function go(page) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  // highlight matching nav button
+  document.querySelectorAll('.nav-btn').forEach(b=>{
+    if(b.getAttribute('onclick')===`go('${page}')`) b.classList.add('active');
+  });
+  if(page==='dashboard') { loadStats(); loadDashRecent(); checkDuplicateCompanies(); }
+  if(page==='tracker') loadApps();
+  if(page==='resumes') loadResumes();
+  if(page==='covers-lib') loadCovers();
+  if(page==='admin') loadFileList();
+  if(page==='tailor') loadResumeOptions();
+  if(page==='interview') loadInterviewHistory();
+  if(page==='digest') loadDigest();
+}
+
+// ── SSE helper ──
+function listenTask(taskId, onProgress, onDone, onError) {
+  const es = new EventSource(`${API}/api/stream/${taskId}`);
+  es.addEventListener('progress', e => {
+    const d = JSON.parse(e.data);
+    onProgress(d.step, d.pct || 0);
+  });
+  es.addEventListener('done', e => {
+    const d = JSON.parse(e.data);
+    es.close();
+    onDone(d);
+  });
+  es.addEventListener('error', e => {
+    try { const d = JSON.parse(e.data); onError(d.message); } catch { onError('Connection error'); }
+    es.close();
+  });
+}
+
+// ── Ollama status ──
+async function checkOllama() {
+  try {
+    const r = await fetch(`${API}/api/ollama/status`);
+    const d = await r.json();
+    const dot = document.getElementById('ollama-dot');
+    const lbl = document.getElementById('ollama-label');
+    const ml  = document.getElementById('model-label');
+    if(d.running) {
+      dot.className = 'status-dot dot-on';
+      lbl.textContent = 'Ollama running';
+      const tpm = d.models.find(m=>m.includes('70b'))||d.models[0]||'—';
+      ml.textContent = tpm;
+    } else {
+      dot.className = 'status-dot dot-off';
+      lbl.textContent = 'Ollama offline';
+      ml.textContent = 'Open Ollama app';
+    }
+  } catch {
+    document.getElementById('ollama-dot').className = 'status-dot dot-off';
+    document.getElementById('ollama-label').textContent = 'Server offline';
+    document.getElementById('model-label').textContent = 'Run server.py';
+  }
+}
+
+// ── Stats / Dashboard ──
+async function loadStats() {
+  try {
+    const r = await fetch(`${API}/api/stats`);
+    const d = await r.json();
+    document.getElementById('m-total').textContent = d.total;
+    document.getElementById('m-new').textContent = d.new_today;
+    document.getElementById('m-applied').textContent = d.applied;
+    document.getElementById('m-interview').textContent = d.interviews;
+    document.getElementById('m-offer').textContent = d.offers;
+    const rate = d.applied>0 ? Math.round(((d.interviews+d.offers)/d.applied)*100) : 0;
+    document.getElementById('m-rate').textContent = rate+'% response rate';
+    const nb = document.getElementById('nb-digest');
+    if(d.new_today>0){nb.textContent=d.new_today;nb.style.display='';}
+    buildFunnel(d.total, d.applied, d.interviews, d.offers);
+  } catch {}
+}
+
+function buildFunnel(total, applied, interview, offer) {
+  const stages=[
+    {label:'Found',     count:total,     color:'var(--accent)'},
+    {label:'Applied',   count:applied,   color:'var(--green)'},
+    {label:'Interview', count:interview, color:'var(--amber)'},
+    {label:'Offer',     count:offer,     color:'var(--teal)'}
+  ];
+  const max = Math.max(total, 1);
+  document.getElementById('funnel').innerHTML = stages.map(s => {
+    const pct = Math.max((s.count / max) * 100, 0);
+    // If bar is wide enough, put count inside; otherwise put it outside
+    const wide = pct > 15;
+    const fillW = s.count === 0 ? '0%' : Math.max(pct, 3) + '%';
+    return `<div class="pipe-stage">
+      <div class="pipe-label">${s.label}</div>
+      <div class="pipe-track">
+        <div class="pipe-fill" style="width:${fillW};background:${s.color}25;border:1px solid ${s.color}44;">
+          ${wide ? `<span class="pipe-count" style="color:${s.color}">${s.count}</span>` : ''}
+        </div>
+      </div>
+      ${!wide ? `<span class="pipe-count-outside" style="color:${s.color}">${s.count}</span>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function checkDuplicateCompanies() {
+  try {
+    const r = await fetch(`${API}/api/jobs?`);
+    const jobs = await r.json();
+    const counts = {};
+    jobs.forEach(j => { const c = j.company||'?'; counts[c] = (counts[c]||0)+1; });
+    const dupes = Object.entries(counts).filter(([c,n]) => n >= 5).sort((a,b)=>b[1]-a[1]);
+    if(!dupes.length) return;
+    const el = document.getElementById('dupe-warning');
+    if(el) {
+      el.style.display = 'block';
+      el.innerHTML = `<span style="color:var(--amber)">⚠</span> High-volume companies (may include dupes): ` +
+        dupes.slice(0,5).map(([c,n])=>`<strong>${esc(c)}</strong> (${n})`).join(', ');
+    }
+  } catch {}
+}
+
+async function loadDashRecent() {
+  try {
+    const r = await fetch(`${API}/api/jobs?`);
+    const jobs = await r.json();
+    const recent = jobs.slice(0,6);
+    const tbody = document.getElementById('dash-tbody');
+    if(!recent.length){
+      tbody.innerHTML='<tr><td colspan="5" class="empty-state">No applications yet</td></tr>';
+      return;
+    }
+    tbody.innerHTML = recent.map(j=>`
+      <tr>
+        <td><strong>${coName(j.company)}</strong></td>
+        <td>${esc(j.title)}</td>
+        <td style="color:var(--text3)">${esc(j.found_date||'')}</td>
+        <td><span class="pill p-${j.status}">${j.status}</span></td>
+        <td><button class="btn btn-g btn-xs" onclick="prepTailorFor('${esc(j.url||'')}')">Tailor</button></td>
+      </tr>`).join('');
+  } catch {}
+}
+
+// ── Scraper ──
+async function runHealer(company) {
+  document.getElementById('heal-task').style.display='block';
+  document.getElementById('heal-log').textContent = '';
+  try {
+    const r = await fetch(`${API}/api/agent/heal`,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({company})
+    });
+    const {task_id} = await r.json();
+    listenTask(task_id,
+      (step,pct)=>{
+        document.getElementById('heal-step').textContent=step;
+        document.getElementById('heal-bar').style.width=pct+'%';
+        document.getElementById('heal-log').textContent += step + '\n';
+        document.getElementById('heal-log').scrollTop = 9999;
+      },
+      (d)=>{
+        document.getElementById('heal-task').style.display='none';
+        notify(d.message || 'Healer complete');
+        loadStats();
+      },
+      (msg)=>{ document.getElementById('heal-task').style.display='none'; notify(msg,'error'); }
+    );
+  } catch(e){ document.getElementById('heal-task').style.display='none'; notify('Server error','error'); }
+}
+
+async function runScraper() {
+  document.getElementById('scrape-task').style.display='block';
+  try {
+    const r = await fetch(`${API}/api/agent/scrape`,{method:'POST'});
+    const {task_id} = await r.json();
+    listenTask(task_id,
+      (step,pct)=>{ document.getElementById('scrape-step').textContent=step; document.getElementById('scrape-bar').style.width=pct+'%'; },
+      (d)=>{ document.getElementById('scrape-task').style.display='none'; notify(d.message); loadStats(); },
+      (msg)=>{ document.getElementById('scrape-task').style.display='none'; notify(msg,'error'); }
+    );
+  } catch { notify('Could not connect to server','error'); }
+}
+
+// ── Scout / Digest ──
+async function runScout() {
+  document.getElementById('scout-task').style.display='block';
+  go('digest');
+  try {
+    const r = await fetch(`${API}/api/agent/scout`,{method:'POST'});
+    const {task_id} = await r.json();
+    listenTask(task_id,
+      (step,pct)=>{ document.getElementById('scout-step').textContent=step; document.getElementById('scout-bar').style.width=pct+'%'; },
+      (d)=>{ document.getElementById('scout-task').style.display='none'; notify(d.message); renderDigest(d.digest||[]); },
+      (msg)=>{ document.getElementById('scout-task').style.display='none'; notify(msg,'error'); }
+    );
+  } catch { notify('Could not connect to server','error'); }
+}
+
+async function runDescribe() {
+  notify('Fetching job descriptions (this may take a minute)...');
+  try {
+    const r = await fetch(`${API}/api/agent/describe`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({limit: 30})
+    });
+    const {task_id} = await r.json();
+    listenTask(task_id,
+      ()=>{},
+      (d)=>{ notify(d.message); },
+      (msg)=>{ notify(msg,'error'); }
+    );
+  } catch { notify('Could not connect to server','error'); }
+}
+
+async function loadDigest() {
+  try {
+    const r = await fetch(`${API}/api/jobs?status=new`);
+    const jobs = await r.json();
+    const scored = jobs.filter(j=>j.score).sort((a,b)=>b.score-a.score);
+    if(scored.length) renderDigest(scored.map(j=>({...j,title:j.title,reason:'Scored by scout agent'})));
+  } catch {}
+}
+
+function renderDigest(items) {
+  const el = document.getElementById('digest-list');
+  if(!items||!items.length){
+    el.innerHTML='<div class="empty-state"><div class="em-icon">☀</div>No scored jobs yet — run scout agent</div>';
+    return;
+  }
+  el.innerHTML = items.map(j=>{
+      const cls = j.score>=8?'score-hi':j.score>=5?'score-md':'score-lo';
+      const wtColor = {Remote:'var(--green)',Hybrid:'var(--amber)','On-site':'var(--accent)'}[j.work_type]||'var(--text3)';
+      const wtBg = {Remote:'var(--green-dim)',Hybrid:'var(--amber-dim)','On-site':'var(--accent-dim)'}[j.work_type]||'var(--bg4)';
+      return `<div class="digest-row">
+      <div class="d-score ${cls}">${j.score||'?'}</div>
+      <div class="d-info">
+        <div class="d-co">${coName(j.company)} ${j.work_type?`<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;background:${wtBg};color:${wtColor};margin-left:6px">${esc(j.work_type)}</span>`:''} ${j.salary_raw?`<span style="font-size:11px;color:var(--green);margin-left:4px">${esc(j.salary_raw)}</span>`:''}</div>
+        <div class="d-role">${esc(j.title||j.role||'')}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">${esc(j.location||'')}</div>
+        ${j.reason?`<div class="d-reason">${esc(j.reason)}</div>`:''}
+        ${j.flag?`<div class="d-flag">⚠ ${esc(j.flag)}</div>`:''}
+      </div>
+      <div class="flex gap6">
+        ${j.url?`<a href="${esc(j.url)}" target="_blank" class="btn btn-g btn-sm">View ↗</a>`:''}
+        <button class="btn btn-p btn-sm" onclick="prepTailorFor('${esc(j.url||'')}','${esc(j.company)}')">Tailor</button>
+        <button class="btn btn-g btn-sm" onclick="prepInterviewFor('${esc(j.company)}','${esc(j.title||j.role||'')}','${esc(j.url||'')}')">Prep</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Resume Tailor ──
+async function loadResumeOptions() {
+  try {
+    const r = await fetch(`${API}/api/resumes/list-files`);
+    const files = await r.json();
+    const sel = document.getElementById('t-resume');
+    sel.innerHTML = '<option value="">Select master resume...</option>' +
+      files.map(f=>`<option value="${esc(f)}">${esc(f)}</option>`).join('');
+  } catch {}
+}
+
+function prepTailorFor(url, company='') {
+  go('tailor');
+  if(url) document.getElementById('t-url').value = url;
+}
+
+let tailorQuality = 'mid';
+function setTailorModel(val) {
+  tailorQuality = val;
+}
+
+async function runTailor() {
+  const url = document.getElementById('t-url').value.trim();
+  if(!url){notify('Paste a job URL first','error');return;}
+  const resume = document.getElementById('t-resume').value;
+  const notes  = document.getElementById('t-notes').value;
+  document.getElementById('t-btn').disabled=true;
+  document.getElementById('t-task').style.display='block';
+  document.getElementById('t-split').style.display='block';
+  document.getElementById('t-pulse').style.display='block';
+  document.getElementById('t-preview').innerHTML='<span style="color:var(--text3)">Agent working...</span>';
+  document.getElementById('t-analysis').style.display='none';
+  document.getElementById('t-analysis-empty').style.display='block';
+  try {
+    const hq = tailorQuality === 'hq';
+    const r = await fetch(`${API}/api/agent/tailor`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url,resume,notes,high_quality:hq,quality:tailorQuality})});
+    const {task_id} = await r.json();
+    listenTask(task_id,
+      (step,pct)=>{ document.getElementById('t-step').textContent=step; document.getElementById('t-bar').style.width=pct+'%'; },
+      (d)=>{
+        document.getElementById('t-btn').disabled=false;
+        document.getElementById('t-task').style.display='none';
+        document.getElementById('t-pulse').style.display='none';
+        currentTailoredText = d.content||'';
+        document.getElementById('t-preview').innerHTML = renderResumeHTML(currentTailoredText);
+        document.getElementById('t-edit').value = currentTailoredText;
+        // Show analysis
+        document.getElementById('t-analysis-empty').style.display='none';
+        document.getElementById('t-analysis').style.display='block';
+        document.getElementById('t-score').textContent = (d.score||0)+'%';
+        document.getElementById('t-score-bar').style.width=(d.score||0)+'%';
+        const kwHtml = (d.keywords||[]).map(k=>`<span class="kw kw-match">${esc(k)}</span>`).join('')
+          + (d.missed_keywords||[]).map(k=>`<span class="kw kw-miss">${esc(k)}</span>`).join('');
+        document.getElementById('t-kw').innerHTML = kwHtml;
+        const role = d.role ? ` as ${d.role}` : '';
+        document.getElementById('t-snapshot').textContent=`Tailored for ${d.company||'target company'}${role}. ${(d.keywords||[]).length} of ${(d.keywords||[]).length + (d.missed_keywords||[]).length} keywords matched.`;
+        notify(d.message || `Resume tailored for ${d.company||'target role'}`);
+      },
+      (msg)=>{ document.getElementById('t-btn').disabled=false; document.getElementById('t-task').style.display='none'; document.getElementById('t-pulse').style.display='none'; notify(msg,'error'); }
+    );
+  } catch { document.getElementById('t-btn').disabled=false; notify('Server error','error'); }
+}
+
+function copyTailoredRich(){ openPreviewAndCopy(document.getElementById('t-edit').value, 'Resume', 'resume'); }
+function openTailoredFormatted(){ openFormattedPage(document.getElementById('t-edit').value, 'Tailored Resume', 'resume'); }
+
+// Re-render preview when user edits the text
+function syncPreview(sourceId, previewId) {
+  const text = document.getElementById(sourceId).value;
+  document.getElementById(previewId).innerHTML = renderResumeHTML(text);
+}
+
+function renderResumeHTML(text) {
+  /**
+   * Convert markdown-ish resume/cover letter text to clean HTML
+   * for display in the agent output panel.
+   * Handles: # h1, ## h2, ** bold **, - bullets, plain paragraphs
+   */
+  if (!text) return '<span style="color:var(--text3)">Waiting for agent...</span>';
+  const lines = text.split('\n');
+  const parts = [];
+  let inList = false;
+
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) {
+      if (inList) { parts.push('</ul>'); inList = false; }
+      parts.push('<br>');
+      continue;
+    }
+    if (line.startsWith('# ') && !line.startsWith('## ')) {
+      if (inList) { parts.push('</ul>'); inList = false; }
+      parts.push(`<h1>${esc(line.slice(2))}</h1>`);
+    } else if (line.startsWith('## ')) {
+      if (inList) { parts.push('</ul>'); inList = false; }
+      parts.push(`<h2>${esc(line.slice(3))}</h2>`);
+    } else if (line.startsWith('- ') || line.startsWith('• ')) {
+      if (!inList) { parts.push('<ul>'); inList = true; }
+      // Handle inline bold within bullets: **text**
+      let bulletText = esc(line.slice(2));
+      bulletText = bulletText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      parts.push(`<li>${bulletText}</li>`);
+    } else if (line.startsWith('**') && line.endsWith('**')) {
+      if (inList) { parts.push('</ul>'); inList = false; }
+      parts.push(`<p><strong>${esc(line.slice(2, -2))}</strong></p>`);
+    } else {
+      if (inList) { parts.push('</ul>'); inList = false; }
+      // Handle inline bold
+      let pText = esc(line);
+      pText = pText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      parts.push(`<p>${pText}</p>`);
+    }
+  }
+  if (inList) parts.push('</ul>');
+  return parts.join('\n');
+}
+async function saveTailored(){
+  notify('Saved to Resume Library');
+  loadResumes();
+}
+
+// ── Cover Letter ──
+function prepCoverFor(url,co,role){go('cover');document.getElementById('cl-url').value=url||'';document.getElementById('cl-co').value=co||'';document.getElementById('cl-role').value=role||'';}
+
+async function runCover() {
+  const co   = document.getElementById('cl-co').value.trim();
+  const role = document.getElementById('cl-role').value.trim();
+  if(!co||!role){notify('Company and role required','error');return;}
+  document.getElementById('cl-btn').disabled=true;
+  document.getElementById('cl-task').style.display='block';
+  document.getElementById('cl-split').style.display='block';
+  try {
+    const r = await fetch(`${API}/api/agent/cover`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:document.getElementById('cl-url').value,company:co,role})});
+    const {task_id} = await r.json();
+    listenTask(task_id,
+      (step,pct)=>{document.getElementById('cl-step').textContent=step;document.getElementById('cl-bar').style.width=pct+'%';},
+      (d)=>{
+        document.getElementById('cl-btn').disabled=false;
+        document.getElementById('cl-task').style.display='none';
+        currentCoverText=d.content||'';
+        document.getElementById('cl-preview').innerHTML=renderResumeHTML(currentCoverText);
+        document.getElementById('cl-edit').value=currentCoverText;
+        notify(`Cover letter written for ${co}`);
+      },
+      (msg)=>{document.getElementById('cl-btn').disabled=false;document.getElementById('cl-task').style.display='none';notify(msg,'error');}
+    );
+  } catch {document.getElementById('cl-btn').disabled=false;notify('Server error','error');}
+}
+
+function copyCoverRich(){openPreviewAndCopy(document.getElementById('cl-edit').value, 'Cover Letter', 'cover');}
+function openCoverFormatted(){openFormattedPage(document.getElementById('cl-edit').value, 'Cover Letter', 'cover');}
+function saveCover(){notify('Saved to Cover Letter Archive');loadCovers();}
+
+// ── Formatted preview + rich text copy ──
+async function openFormattedPage(content, title, type) {
+  // POST content to server, get back a formatted HTML page, open in new tab
+  try {
+    const r = await fetch(`${API}/api/preview`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({content, title, type})
+    });
+    const html = await r.text();
+    const blob = new Blob([html], {type: 'text/html'});
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    notify('Formatted page opened — use Print for PDF, or copy-paste to Google Docs');
+  } catch(e) {
+    notify('Could not open preview: ' + e.message, 'error');
+  }
+}
+
+function openPreviewAndCopy(content, title, type) {
+  // Convert markdown-ish text to rich HTML and copy to clipboard
+  // This preserves formatting when pasted into Google Docs
+  const lines = content.split('\n');
+  const htmlParts = [];
+  let inList = false;
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) {
+      if (inList) { htmlParts.push('</ul>'); inList = false; }
+      htmlParts.push('<br>');
+    } else if (line.startsWith('## ')) {
+      if (inList) { htmlParts.push('</ul>'); inList = false; }
+      htmlParts.push(`<h2 style="font-size:14px;font-weight:bold;text-transform:uppercase;border-bottom:1px solid #333;padding-bottom:2px;margin:12px 0 6px;">${esc(line.slice(3))}</h2>`);
+    } else if (line.startsWith('# ')) {
+      if (inList) { htmlParts.push('</ul>'); inList = false; }
+      htmlParts.push(`<h1 style="font-size:18px;font-weight:bold;text-align:center;">${esc(line.slice(2))}</h1>`);
+    } else if (line.startsWith('- ') || line.startsWith('• ')) {
+      if (!inList) { htmlParts.push('<ul style="margin:4px 0 4px 20px;">'); inList = true; }
+      htmlParts.push(`<li style="margin:2px 0;">${esc(line.slice(2))}</li>`);
+    } else if (line.startsWith('**') && line.endsWith('**')) {
+      if (inList) { htmlParts.push('</ul>'); inList = false; }
+      htmlParts.push(`<p style="margin:3px 0;"><strong>${esc(line.slice(2,-2))}</strong></p>`);
+    } else {
+      if (inList) { htmlParts.push('</ul>'); inList = false; }
+      htmlParts.push(`<p style="margin:3px 0;">${esc(line)}</p>`);
+    }
+  }
+  if (inList) htmlParts.push('</ul>');
+  const html = htmlParts.join('\n');
+
+  // Use the clipboard API with HTML mime type for rich paste
+  try {
+    const blob = new Blob([html], {type: 'text/html'});
+    const plainBlob = new Blob([content], {type: 'text/plain'});
+    const item = new ClipboardItem({
+      'text/html': blob,
+      'text/plain': plainBlob,
+    });
+    navigator.clipboard.write([item]).then(() => {
+      notify('Rich text copied — paste into Google Docs with Ctrl+V');
+    }).catch(() => {
+      // Fallback: plain text copy
+      navigator.clipboard.writeText(content);
+      notify('Copied as plain text (rich copy not supported in this browser)');
+    });
+  } catch(e) {
+    navigator.clipboard.writeText(content);
+    notify('Copied as plain text');
+  }
+}
+
+// ── Interview Prep ──
+function prepInterviewFor(co,role,url){go('interview');document.getElementById('ip-co').value=co||'';document.getElementById('ip-role').value=role||'';document.getElementById('ip-url').value=url||'';}
+
+async function runInterview() {
+  const co  =document.getElementById('ip-co').value.trim();
+  const role=document.getElementById('ip-role').value.trim();
+  if(!co||!role){notify('Company and role required','error');return;}
+  document.getElementById('ip-btn').disabled=true;
+  document.getElementById('ip-task').style.display='block';
+  document.getElementById('ip-result').style.display='none';
+  try {
+    const r=await fetch(`${API}/api/agent/interview`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({company:co,role,url:document.getElementById('ip-url').value})});
+    const {task_id}=await r.json();
+    listenTask(task_id,
+      (step,pct)=>{document.getElementById('ip-step').textContent=step;document.getElementById('ip-bar').style.width=pct+'%';},
+      (d)=>{
+        document.getElementById('ip-btn').disabled=false;
+        document.getElementById('ip-task').style.display='none';
+        document.getElementById('ip-result').style.display='block';
+        document.getElementById('ip-result-title').textContent=`${co} — ${role}`;
+        currentPrepText=d.content||'';
+        renderPrepContent(currentPrepText);
+        notify(`Prep guide ready for ${co}`);
+        loadInterviewHistory();
+      },
+      (msg)=>{document.getElementById('ip-btn').disabled=false;document.getElementById('ip-task').style.display='none';notify(msg,'error');}
+    );
+  } catch {document.getElementById('ip-btn').disabled=false;notify('Server error','error');}
+}
+
+function renderPrepContent(text) {
+  const el = document.getElementById('ip-content');
+  el.innerHTML = text.replace(/## (.+)/g,'<h2>$1</h2>').replace(/\n/g,'<br>');
+}
+function copyPrep(){navigator.clipboard.writeText(currentPrepText);notify('Copied');}
+
+async function loadInterviewHistory() {
+  try {
+    const r=await fetch(`${API}/api/interview`);
+    const items=await r.json();
+    const el=document.getElementById('ip-history');
+    if(!items.length){el.innerHTML='<div class="empty-state"><div class="em-icon">🎯</div>No prep guides yet</div>';return;}
+    el.innerHTML=items.map(i=>`<div style="padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="showPrepGuide(${i.id})">
+      <div style="font-size:13px;font-weight:600">${esc(i.company)}</div>
+      <div style="font-size:12px;color:var(--text3)">${esc(i.role||'')} · ${esc(i.created||'')}</div>
+    </div>`).join('');
+  } catch {}
+}
+
+async function showPrepGuide(id) {
+  try {
+    const r=await fetch(`${API}/api/interview`);
+    const items=await r.json();
+    const item=items.find(i=>i.id===id);
+    if(!item)return;
+    document.getElementById('ip-result').style.display='block';
+    document.getElementById('ip-result-title').textContent=`${item.company} — ${item.role||''}`;
+    currentPrepText=item.content||'';
+    renderPrepContent(currentPrepText);
+  } catch {}
+}
+
+// ── Applications tracker ──
+let workFilter = '';
+let locFilter    = '';
+let salaryFilter = false;   // show only jobs with salary_min >= SALARY_FLOOR
+const SALARY_FLOOR = 130000;
+let currentPreviewJob = null;
+let sortCol = 'loc_priority';
+let sortDir = 'desc';
+let cachedJobs = [];
+
+// Location priority score: MA/Boston = 3, Remote/Hybrid = 2, other US = 1, blank = 0
+function locScore(j) {
+  const l = (j.location || '').toLowerCase();
+  if (l.includes('boston') || l.includes('massachusetts') ||
+      (l.includes(', ma') || l.endsWith(' ma') || l === 'ma')) return 3;
+  if (l.includes('remote') || l.includes('hybrid')) return 2;
+  if (l.includes('cambridge') || l.includes('waltham') || l.includes('burlington') ||
+      l.includes('woburn') || l.includes('framingham') || l.includes('marlborough') ||
+      l.includes('bedford') || l.includes('lexington') || l.includes('newton') ||
+      l.includes('natick') || l.includes('needham') || l.includes('somerville') ||
+      l.includes('medford') || l.includes('watertown') || l.includes('quincy') ||
+      l.includes('braintree') || l.includes('norwood') || l.includes('canton')) return 3;
+  if (l && !l.includes('international') && !l.includes('canada') &&
+      !l.includes('united kingdom') && !l.includes('india') &&
+      !l.includes('germany') && !l.includes('australia')) return 1;
+  return 0;
+}
+
+function sortApps(col) {
+  if(sortCol === col) {
+    sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortCol = col;
+    sortDir = col === 'found_date' || col === 'score' || col === 'salary_min' || col === 'loc_priority' ? 'desc' : 'asc';
+  }
+  // Update indicators
+  document.querySelectorAll('[id^="sort-ind-"]').forEach(el => el.textContent = '');
+  const ind = document.getElementById('sort-ind-' + col);
+  if(ind) ind.textContent = sortDir === 'asc' ? ' ▲' : ' ▼';
+  const si = document.getElementById('sort-indicator');
+  if(si) si.textContent = col + (sortDir==='asc'?' ▲':' ▼');
+  renderAppsTable(cachedJobs);
+}
+
+function applySort(jobs) {
+  return [...jobs].sort((a, b) => {
+    // loc_priority: sort by location score desc, then found_date desc as tiebreak
+    if(sortCol === 'loc_priority') {
+      const diff = locScore(b) - locScore(a);
+      if(diff !== 0) return diff;
+      // tiebreak 1: jobs with known salary first
+      const aSal = a.salary_min ? 1 : 0, bSal = b.salary_min ? 1 : 0;
+      if(bSal !== aSal) return bSal - aSal;
+      // tiebreak 2: score desc, then found_date desc
+      const scoreDiff = (b.score||0) - (a.score||0);
+      if(scoreDiff !== 0) return scoreDiff;
+      return (b.found_date||'').localeCompare(a.found_date||'');
+    }
+    let av = a[sortCol], bv = b[sortCol];
+    if(sortCol === 'salary_min') { av = a.salary_min||0; bv = b.salary_min||0; }
+    if(sortCol === 'score')      { av = a.score||0; bv = b.score||0; }
+    if(av == null) av = '';
+    if(bv == null) bv = '';
+    const cmp = typeof av === 'number' && typeof bv === 'number'
+      ? av - bv
+      : String(av).toLowerCase().localeCompare(String(bv).toLowerCase());
+    return sortDir === 'asc' ? cmp : -cmp;
+  });
+}
+
+async function bulkDeleteOld() {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 30);
+  const old = cachedJobs.filter(j =>
+    j.status === 'new' && j.found_date && new Date(j.found_date) < cutoff
+  );
+  if(!old.length) { notify('No stale new-jobs found'); return; }
+  if(!confirm(`Delete ${old.length} jobs older than 30 days with status "new"?`)) return;
+  await Promise.all(old.map(j => fetch(`${API}/api/jobs/${j.id}`, {method:'DELETE'})));
+  notify(`Pruned ${old.length} old jobs`);
+  loadApps(); loadStats();
+}
+
+function setLocFilter(f,el){
+  locFilter = locFilter===f ? '' : f;
+  document.querySelectorAll('.filter-btn').forEach(b=>{
+    if(b.textContent.trim().includes('MA / Remote')) b.classList.remove('on');
+  });
+  if(locFilter) el.classList.add('on');
+  loadApps();
+}
+
+function setAppFilter(f,el){
+  appFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  loadApps();
+}
+
+function toggleSalaryFilter(el) {
+  salaryFilter = !salaryFilter;
+  el.classList.toggle('on', salaryFilter);
+  loadApps();
+}
+
+function setWorkFilter(f,el){
+  workFilter = workFilter===f ? '' : f;
+  document.querySelectorAll('.filter-btn').forEach(b=>{
+    if(['Remote','Hybrid','On-site'].includes(b.textContent.trim()))
+      b.classList.remove('on');
+  });
+  if(workFilter) el.classList.add('on');
+  loadApps();
+}
+
+function openPreview(job) {
+  currentPreviewJob = job;
+  const pv = document.getElementById('job-preview');
+  pv.style.display = 'block';
+  document.getElementById('pv-title').textContent = job.title||'';
+  document.getElementById('pv-company').textContent = (coName(job.company)||'') + (job.location ? ' · '+job.location : '');
+  // Tags row
+  const tags = [];
+  if(job.work_type) {
+    const wtColor={Remote:'var(--green)',Hybrid:'var(--amber)','On-site':'var(--accent)'}[job.work_type]||'var(--text2)';
+    const wtBg={Remote:'var(--green-dim)',Hybrid:'var(--amber-dim)','On-site':'var(--accent-dim)'}[job.work_type]||'var(--bg4)';
+    tags.push(`<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:${wtBg};color:${wtColor}">${esc(job.work_type)}</span>`);
+  }
+  if(job.level) tags.push(`<span style="font-size:11px;padding:3px 10px;border-radius:20px;background:var(--purple-dim);color:var(--purple)">${esc(job.level)}</span>`);
+  if(job.team)  tags.push(`<span style="font-size:11px;padding:3px 10px;border-radius:20px;background:var(--teal-dim);color:var(--teal)">${esc(job.team)}</span>`);
+  if(job.salary_raw) tags.push(`<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--green-dim);color:var(--green)">${esc(job.salary_raw)}</span>`);
+  if(job.posted_date) tags.push(`<span style="font-size:11px;padding:3px 10px;border-radius:20px;background:var(--bg4);color:var(--text3)">Posted ${esc(job.posted_date)}</span>`);
+  document.getElementById('pv-tags').innerHTML = tags.join('');
+  // URL
+  const pvUrl = document.getElementById('pv-url');
+  if(job.url){ pvUrl.href=job.url; pvUrl.style.display='block'; }
+  else { pvUrl.style.display='none'; }
+  // Description
+  document.getElementById('pv-desc').textContent = job.description || 'No description available — click "Open full job posting" to view on company site.';
+  // Notes
+  document.getElementById('pv-notes').value = job.notes||'';
+}
+
+function closePreview(){
+  document.getElementById('job-preview').style.display='none';
+  currentPreviewJob=null;
+}
+
+async function saveNotes(){
+  if(!currentPreviewJob) return;
+  const notes = document.getElementById('pv-notes').value;
+  await fetch(`${API}/api/jobs/${currentPreviewJob.id}`,{
+    method:'PATCH',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({notes})
+  });
+}
+
+function tailorFromPreview(){
+  if(!currentPreviewJob) return;
+  prepTailorFor(currentPreviewJob.url||'', currentPreviewJob.company||'');
+}
+function prepFromPreview(){
+  if(!currentPreviewJob) return;
+  prepInterviewFor(currentPreviewJob.company||'', currentPreviewJob.title||'', currentPreviewJob.url||'');
+}
+
+async function loadApps() {
+  const q=document.getElementById('app-q').value;
+  const params = new URLSearchParams();
+  if(appFilter!=='all') params.set('status', appFilter);
+  if(q) params.set('q', q);
+  try {
+    const r=await fetch(`${API}/api/jobs?${params}`);
+    let jobs=await r.json();
+    // Client-side work type filter
+    if(workFilter) jobs=jobs.filter(j=>j.work_type===workFilter);
+    if(locFilter==='ma') jobs=jobs.filter(j=>{
+      const l=(j.location||'').toLowerCase();
+      return l.includes('ma') || l.includes('boston') || l.includes('massachusetts') ||
+             l.includes('remote') || l.includes('hybrid') || l==='' ;
+    });
+    if(salaryFilter) jobs=jobs.filter(j=> j.salary_min && j.salary_min >= SALARY_FLOOR);
+    cachedJobs = jobs;
+    renderAppsTable(jobs);
+  } catch(e){ console.error(e); }
+}
+
+function renderAppsTable(jobs) {
+    const sorted = applySort(jobs);
+    const tbody=document.getElementById('apps-tbody');
+    if(!sorted.length){
+      tbody.innerHTML='<tr><td colspan="9" class="empty-state">No jobs found — try different filters</td></tr>';
+      return;
+    }
+    tbody.innerHTML=sorted.map(j=>{
+      const wtColor={Remote:'var(--green)',Hybrid:'var(--amber)',['On-site']:'var(--accent)'}[j.work_type]||'var(--text3)';
+      const wtBg={Remote:'var(--green-dim)',Hybrid:'var(--amber-dim)',['On-site']:'var(--accent-dim)'}[j.work_type]||'var(--bg4)';
+      const workTypePill = j.work_type
+        ? `<span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:${wtBg};color:${wtColor}">${esc(j.work_type)}</span>`
+        : '<span style="color:var(--text3);font-size:12px">—</span>';
+      const salaryDisplay = j.salary_raw
+        ? `<span style="font-size:12px;color:var(--green);font-weight:500">${esc(j.salary_raw)}</span>`
+        : '<span style="color:var(--text3);font-size:12px">—</span>';
+      const levelTag = j.level ? `<span style="font-size:10px;color:var(--purple);margin-left:4px">${esc(j.level)}</span>` : '';
+      const teamTag  = j.team  ? `<div style="font-size:10px;color:var(--teal);margin-top:2px">${esc(j.team)}</div>` : '';
+      const postedTag = j.posted_date ? `<div style="font-size:10px;color:var(--text3)">Posted ${esc(j.posted_date)}</div>` : '';
+      const scoreDisplay = j.score
+        ? `<span style="font-size:13px;font-weight:700;color:${j.score>=8?'var(--green)':j.score>=5?'var(--amber)':'var(--text3)'}">${j.score}</span>`
+        : '<span style="color:var(--text4);font-size:12px">—</span>';
+      // Days since found
+      const daysOld = j.found_date ? Math.floor((Date.now() - new Date(j.found_date))/86400000) : null;
+      const freshTag = daysOld !== null && daysOld > 14 && j.status === 'new'
+        ? `<div style="font-size:10px;color:var(--amber);margin-top:1px">${daysOld}d old</div>` : '';
+      const isSelected = currentPreviewJob && currentPreviewJob.id===j.id;
+      // Highlight MA/Boston/Remote locations
+      const loc = j.location||'';
+      const locLower = loc.toLowerCase();
+      const isMAMatch = locLower.includes('ma') || locLower.includes('boston') ||
+                        locLower.includes('massachusetts') || locLower.includes('remote') ||
+                        locLower.includes('hybrid');
+      const locColor = isMAMatch ? 'var(--green)' : 'var(--text3)';
+      const locIcon  = locLower.includes('remote') ? '⟳ ' : locLower.includes('ma') || locLower.includes('boston') ? '★ ' : '';
+      return `<tr style="cursor:pointer;${isSelected?'background:var(--accent-glow);':''}" onclick="openPreview(${JSON.stringify(j).replace(/"/g,'&quot;')})">
+        <td>
+          <strong style="font-size:13px">${coName(j.company)}</strong>
+          <div style="font-size:10px;color:var(--text3)">${esc(j.source||'')} </div>
+        </td>
+        <td style="max-width:200px">
+          <div style="font-size:13px;font-weight:500">${esc(j.title)}${levelTag}</div>
+          ${teamTag}
+        </td>
+        <td style="max-width:140px">
+          <div style="font-size:12px;color:${locColor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${esc(loc)}">${locIcon}${esc(loc)||'—'}</div>
+        </td>
+        <td>${workTypePill}${postedTag}</td>
+        <td>${salaryDisplay}</td>
+        <td style="color:var(--text3);font-size:11px;white-space:nowrap">${esc(j.found_date||'')}${freshTag}</td>
+        <td>${scoreDisplay}</td>
+        <td>
+          <select class="status-sel" onchange="event.stopPropagation();updateJobStatus(${j.id},this.value)">
+            ${['new','applied','interview','offer','rejected'].map(s=>`<option value="${s}"${j.status===s?' selected':''} >${s[0].toUpperCase()+s.slice(1)}</option>`).join('')}
+          </select>
+        </td>
+        <td onclick="event.stopPropagation()">
+          <div class="flex gap6">
+            ${j.url ? `<a href="${esc(j.url)}" target="_blank" class="btn btn-p btn-xs" title="Open job posting">↗</a>` : ''}
+            <button class="btn btn-danger btn-xs" onclick="deleteJob(${j.id})">×</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+}
+
+async function updateJobStatus(id,status){
+  await fetch(`${API}/api/jobs/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status})});
+  loadStats();
+}
+
+async function deleteJob(id){
+  if(!confirm('Remove this application?'))return;
+  await fetch(`${API}/api/jobs/${id}`,{method:'DELETE'});
+  loadApps(); loadStats();
+}
+
+function openAddJob(){document.getElementById('add-job-modal').classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+async function saveNewJob(){
+  const co=document.getElementById('aj-co').value.trim();
+  const role=document.getElementById('aj-role').value.trim();
+  if(!co||!role){notify('Company and role required','error');return;}
+  await fetch(`${API}/api/jobs`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({company:co,title:role,location:document.getElementById('aj-loc').value,url:document.getElementById('aj-url').value,source:document.getElementById('aj-src').value||'Manual',status:document.getElementById('aj-status').value})});
+  closeModal('add-job-modal');
+  loadApps(); loadStats();
+  notify('Application added');
+}
+
+// ── Resumes ──
+async function loadResumes(){
+  try {
+    const r=await fetch(`${API}/api/resumes`);
+    const items=await r.json();
+    const grid=document.getElementById('resume-grid');
+    if(!items.length){
+      grid.innerHTML=`<div class="upload-zone" style="grid-column:1/-1" onclick="document.getElementById('res-file-input').click()"><div style="font-size:28px;color:var(--text3)">📄</div><div class="upload-zone-text">Upload your master resume .docx</div><div style="font-size:11px;color:var(--text3);margin-top:4px">Tailored versions appear here automatically after using Resume Tailor</div></div>`;
+      return;
+    }
+    grid.innerHTML=items.map(i=>`
+      <div class="dir-card">
+        <button class="dir-del" onclick="deleteResume(event,${i.id})">×</button>
+        <div class="dir-icon" style="background:${i.type==='master'?'var(--accent-dim)':'var(--green-dim)'}">📄</div>
+        <div class="dir-name">${esc(i.name)}</div>
+        <div class="dir-meta">${esc(i.company||'')} · ${esc(i.created||'')}</div>
+        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+          <span class="pill p-${i.type==='master'?'master':'tailored'}">${i.type}</span>
+          <button class="btn btn-g btn-xs" onclick="downloadResume(${i.id})">Download</button>
+        </div>
+      </div>`).join('');
+  } catch {}
+}
+
+async function uploadResume(input){
+  const file=input.files[0];
+  if(!file)return;
+  const fd=new FormData();
+  fd.append('file',file);
+  fd.append('name',file.name);
+  fd.append('type','master');
+  await fetch(`${API}/api/resumes`,{method:'POST',body:fd});
+  loadResumes();
+  notify('Resume uploaded');
+  loadResumeOptions();
+}
+
+function downloadResume(id){window.open(`${API}/api/resumes/${id}/download`);}
+
+async function deleteResume(e,id){
+  e.stopPropagation();
+  if(!confirm('Delete this resume?'))return;
+  await fetch(`${API}/api/resumes/${id}`,{method:'DELETE'});
+  loadResumes();
+}
+
+// ── Covers ──
+async function loadCovers(){
+  try {
+    const r=await fetch(`${API}/api/covers`);
+    const items=await r.json();
+    const grid=document.getElementById('cover-grid');
+    if(!items.length){
+      grid.innerHTML=`<div class="dir-card" style="grid-column:1/-1;text-align:center;padding:28px;cursor:pointer;border:2px dashed var(--border2)" onclick="go('cover')"><div style="font-size:28px;color:var(--text3)">✉</div><div style="margin-top:10px;color:var(--text2)">No cover letters yet — generate one</div></div>`;
+      return;
+    }
+    grid.innerHTML=items.map(i=>`
+      <div class="dir-card">
+        <button class="dir-del" onclick="deleteCover(event,${i.id})">×</button>
+        <div class="dir-icon" style="background:var(--purple-dim)">✉</div>
+        <div class="dir-name">${esc(i.name)}</div>
+        <div class="dir-meta">${esc(i.company||'')} · ${esc(i.created||'')}</div>
+        <div style="margin-top:8px"><button class="btn btn-g btn-xs" onclick="window.open('${API}/api/covers/${i.id}/download')">Download</button></div>
+      </div>`).join('');
+  } catch {}
+}
+
+async function deleteCover(e,id){
+  e.stopPropagation();
+  if(!confirm('Delete this cover letter?'))return;
+  await fetch(`${API}/api/covers/${id}`,{method:'DELETE'});
+  loadCovers();
+}
+
+// ── Utility ──
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function coName(s){
+  // Never display a URL as company name
+  if(!s) return 'Unknown';
+  if(s.includes('http')||s.includes('www.')||s.includes('.com')||s.includes('.io')||s.includes('.org')) return 'Unknown';
+  return s;
+}
+
+// ── Chat ──
+let chatMessages = [];
+let chatJobContext = '';
+
+// Restore chat history from localStorage on load
+(function() {
+  try {
+    const saved = localStorage.getItem('tpm_chat');
+    if(saved) {
+      chatMessages = JSON.parse(saved) || [];
+      // Render saved messages after DOM loads
+      setTimeout(() => {
+        const box = document.getElementById('chat-messages');
+        if(!box || chatMessages.length === 0) return;
+        box.innerHTML = '';
+        chatMessages.forEach(m => appendChatMessage(m.role, m.content));
+        const notice = document.createElement('div');
+        notice.style.cssText = 'text-align:center;font-size:11px;color:var(--text3);padding:6px;';
+        notice.textContent = `↑ ${chatMessages.length} messages restored from last session`;
+        box.insertBefore(notice, box.firstChild);
+      }, 500);
+    }
+  } catch(e) {}
+})();
+
+function setChatJobContext(job) {
+  chatJobContext = job ? `Company: ${job.company}\nRole: ${job.title}\nLocation: ${job.location||''}\nSalary: ${job.salary_raw||''}\nDescription: ${(job.description||'').slice(0,800)}` : '';
+  const el = document.getElementById('chat-job-ctx');
+  if(el) el.textContent = job ? `${job.company} — ${job.title}` : 'No job selected';
+}
+
+function chatKeydown(e) {
+  if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendChat(); }
+}
+
+function quickPrompt(text) {
+  document.getElementById('chat-input').value = text;
+  sendChat();
+}
+
+function clearChat() {
+  chatMessages = [];
+  try { localStorage.removeItem('tpm_chat'); } catch(e){}
+  document.getElementById('chat-messages').innerHTML = '<div style="font-size:13px;color:var(--text3);text-align:center;padding:20px 0;">Chat cleared. Ask me anything.</div>';
+}
+
+let currentChatModel = 'llama3.1:8b';
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const text  = input.value.trim();
+  if(!text) return;
+  currentChatModel = document.getElementById('chat-model').value;
+  input.value = '';
+  document.getElementById('chat-send').disabled = true;
+
+  chatMessages.push({role:'user', content:text});
+  appendChatMessage('user', text);
+
+  const assistantId = 'msg-' + Date.now();
+  appendChatMessage('assistant', '...', assistantId);
+
+  try {
+    const r = await fetch(`${API}/api/chat`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        messages: chatMessages, // full history including the new user message
+        model: currentChatModel,
+        job_context: chatJobContext || '',
+      })
+    });
+
+    if(!r.ok) {
+      const err = await r.text();
+      const msgEl = document.getElementById(assistantId);
+      if(msgEl) msgEl.querySelector('.chat-text').textContent = 'Server error ' + r.status + ': ' + err.slice(0,200);
+      document.getElementById('chat-send').disabled = false;
+      return;
+    }
+
+    const reader  = r.body.getReader();
+    const decoder = new TextDecoder();
+    let fullResponse = '';
+    let buffer = '';
+    const msgEl = document.getElementById(assistantId);
+    const textEl = msgEl ? msgEl.querySelector('.chat-text') : null;
+    if(textEl) textEl.textContent = '';
+
+    while(true) {
+      const {done, value} = await reader.read();
+      if(done) break;
+      buffer += decoder.decode(value, {stream:true});
+      // Process complete lines
+      const lines = buffer.split('\n');
+      buffer = lines.pop(); // keep incomplete last line in buffer
+      for(const line of lines) {
+        const trimmed = line.trim();
+        if(!trimmed || !trimmed.startsWith('data:')) continue;
+        try {
+          const payload = trimmed.slice(5).trim();
+          if(!payload) continue;
+          const d = JSON.parse(payload);
+          if(d.error) {
+            if(textEl) textEl.textContent = 'Error: ' + d.error;
+            break;
+          }
+          if(d.token) {
+            fullResponse += d.token;
+            if(textEl) textEl.textContent = fullResponse;
+            const box = document.getElementById('chat-messages');
+            if(box) box.scrollTop = box.scrollHeight;
+          }
+        } catch(parseErr) {}
+      }
+    }
+
+    if(fullResponse) {
+      chatMessages.push({role:'assistant', content: fullResponse});
+      // Save to localStorage for chat history
+      try { localStorage.setItem('tpm_chat', JSON.stringify(chatMessages.slice(-40))); } catch(e){}
+    }
+
+  } catch(e) {
+    const msgEl = document.getElementById(assistantId);
+    if(msgEl) msgEl.querySelector('.chat-text').textContent = 'Error: ' + e.message;
+  }
+
+  document.getElementById('chat-send').disabled = false;
+  input.focus();
+}
+
+function appendChatMessage(role, text, id='') {
+  const box = document.getElementById('chat-messages');
+  const isUser = role === 'user';
+  const div = document.createElement('div');
+  div.id = id;
+  div.style.cssText = `display:flex;flex-direction:column;align-items:${isUser?'flex-end':'flex-start'};margin-bottom:4px;`;
+  const label = isUser ? 'You' : (currentChatModel.includes('70b') ? 'llama 70b' : currentChatModel.includes('deepseek') ? 'deepseek' : 'llama 8b');
+  div.innerHTML = `
+    <div style="max-width:85%;background:${isUser?'var(--accent)':'var(--bg4)'};color:${isUser?'#fff':'var(--text)'};
+      padding:10px 14px;border-radius:${isUser?'12px 12px 2px 12px':'12px 12px 12px 2px'};
+      font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word;" class="chat-text">${esc(text)}</div>
+    <div style="font-size:10px;color:var(--text3);margin-top:3px;padding:0 2px;">${label}</div>
+  `;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+// Override openPreview to also set chat context
+const _origOpenPreview = typeof openPreview === 'function' ? openPreview : null;
+function openPreview(job) {
+  if(_origOpenPreview) _origOpenPreview(job);
+  setChatJobContext(job);
+}
+
+// ── Agents Page ──────────────────────────────────────────────────────────────
+
+async function runLinkedIn() {
+  const limit = parseInt(document.getElementById('li-limit').value) || 30;
+  document.getElementById('li-task').style.display='block';
+  try {
+    const r = await fetch(`${API}/api/agent/linkedin`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({limit})
+    });
+    const {task_id} = await r.json();
+    listenTask(task_id,
+      (step,pct)=>{ document.getElementById('li-step').textContent=step; document.getElementById('li-bar').style.width=pct+'%'; },
+      (d)=>{ document.getElementById('li-task').style.display='none'; notify(d.message||'LinkedIn done'); loadStats(); },
+      (msg)=>{ document.getElementById('li-task').style.display='none'; notify(msg,'error'); }
+    );
+  } catch(e){ document.getElementById('li-task').style.display='none'; notify('Error: '+e.message,'error'); }
+}
+
+async function runMarket() {
+  const days = parseInt(document.getElementById('market-days').value)||7;
+  document.getElementById('market-task').style.display='block';
+  document.getElementById('market-report').style.display='none';
+  try {
+    const r = await fetch(`${API}/api/agent/market`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({days})
+    });
+    const {task_id} = await r.json();
+    listenTask(task_id,
+      (step,pct)=>{ document.getElementById('market-step').textContent=step; document.getElementById('market-bar').style.width=pct+'%'; },
+      (d)=>{ 
+        document.getElementById('market-task').style.display='none';
+        renderMarketReport(d.report||{});
+        notify('Market analysis complete');
+      },
+      (msg)=>{ document.getElementById('market-task').style.display='none'; notify(msg,'error'); }
+    );
+  } catch(e){ document.getElementById('market-task').style.display='none'; notify('Error: '+e.message,'error'); }
+}
+
+function renderMarketReport(r) {
+  if(!r || !r.generated_at) return;
+  const el = document.getElementById('market-report');
+  const kws = (r.keywords?.in_titles||[]).slice(0,8).map(([k,n])=>
+    `<span style="background:var(--bg3);padding:3px 8px;border-radius:12px;font-size:12px;margin:2px 2px;">${k} <strong>${n}</strong></span>`
+  ).join('');
+  const sal = r.salaries||{};
+  const locs = r.locations?.location_breakdown||{};
+  el.innerHTML = `
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px;">${r.generated_at} · last ${r.period_days} days · ${r.new_jobs} new jobs · ${r.total_in_db} total</div>
+      ${r.llm_summary ? `<div style="font-size:13px;line-height:1.7;color:var(--text);margin-bottom:12px;padding:10px;background:var(--bg3);border-radius:var(--r);">${esc(r.llm_summary)}</div>` : ''}
+      <div style="margin-bottom:8px;"><strong style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);">Hot Keywords</strong><br><div style="margin-top:6px;">${kws||'No data'}</div></div>
+      ${sal.avg_max ? `<div style="margin-bottom:8px;font-size:12px;"><strong style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);">Salary</strong><br>Avg max: <strong>$${(sal.avg_max/1000).toFixed(0)}k</strong> · Median max: <strong>$${(sal.median_max/1000).toFixed(0)}k</strong> · ${sal.jobs_with_salary} jobs with data</div>` : ''}
+      <div style="font-size:12px;"><strong style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);">Locations</strong><br>${Object.entries(locs).map(([l,n])=>`${l}: <strong>${n}</strong>`).join(' · ')}</div>
+    </div>`;
+  el.style.display='block';
+}
+
+async function loadTargets() {
+  try {
+    const r = await fetch(`${API}/api/custom-targets`);
+    const targets = await r.json();
+    const keys = Object.keys(targets);
+    const el = document.getElementById('targets-list');
+    if(!keys.length){
+      el.innerHTML='<div style="font-size:13px;color:var(--text3);">No custom targets yet.</div>';
+      return;
+    }
+    el.innerHTML = `
+      <table style="width:100%;font-size:12px;border-collapse:collapse;">
+        <tr style="color:var(--text3);font-size:11px;">
+          <th style="text-align:left;padding:4px 8px;">Company</th>
+          <th style="text-align:left;padding:4px 8px;">Added</th>
+          <th style="text-align:left;padding:4px 8px;">Last scraped</th>
+          <th style="text-align:left;padding:4px 8px;">Jobs</th>
+          <th style="padding:4px 8px;"></th>
+        </tr>
+        ${keys.map(k=>{const t=targets[k]; return `
+          <tr style="border-top:1px solid var(--border);">
+            <td style="padding:6px 8px;font-weight:500;">${esc(t.name)}</td>
+            <td style="padding:6px 8px;color:var(--text3);">${t.added||''}</td>
+            <td style="padding:6px 8px;color:var(--text3);">${t.last_scraped||'never'}</td>
+            <td style="padding:6px 8px;">${t.job_count||0}</td>
+            <td style="padding:6px 8px;">
+              <button class="btn btn-g btn-sm" onclick="runCustomScrape('${esc(t.name)}')">Scrape</button>
+              <button class="btn btn-sm" style="background:var(--bg3);color:var(--text2);" onclick="removeTarget('${esc(t.name)}')">✕</button>
+            </td>
+          </tr>`}).join('')}
+      </table>`;
+  } catch(e){ console.error(e); }
+}
+
+async function addTargets() {
+  const input = document.getElementById('target-input');
+  const companies = input.value.trim();
+  if(!companies) return;
+  try {
+    await fetch(`${API}/api/custom-targets/add`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({companies})
+    });
+    input.value='';
+    loadTargets();
+    notify('Companies added');
+  } catch(e){ notify('Error: '+e.message,'error'); }
+}
+
+async function removeTarget(name) {
+  try {
+    await fetch(`${API}/api/custom-targets/remove`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({company:name})
+    });
+    loadTargets();
+    notify(name+' removed');
+  } catch(e){ notify('Error','error'); }
+}
+
+async function runCustomScrape(company) {
+  document.getElementById('custom-task').style.display='block';
+  try {
+    const r = await fetch(`${API}/api/agent/custom-scrape`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({company})
+    });
+    const {task_id} = await r.json();
+    listenTask(task_id,
+      (step,pct)=>{ document.getElementById('custom-step').textContent=step; document.getElementById('custom-bar').style.width=pct+'%'; },
+      (d)=>{ document.getElementById('custom-task').style.display='none'; notify(d.message||'Done'); loadStats(); loadTargets(); },
+      (msg)=>{ document.getElementById('custom-task').style.display='none'; notify(msg,'error'); }
+    );
+  } catch(e){ document.getElementById('custom-task').style.display='none'; notify('Error','error'); }
+}
+
+// Load targets when agents page opens
+const _origGo = go;
+go = function(page) {
+  _origGo(page);
+  if(page==='agents') { loadTargets(); }
+};
+
+// ── Admin / Code Editor ──
+let pendingEdit = null;
+let currentAdminFile = '';
+
+// ── File browser ──
+async function loadFileList() {
+  try {
+    const r = await fetch(`${API}/api/admin/files`);
+    const files = await r.json();
+    const list = document.getElementById('file-list');
+    if(!list) return;
+    list.innerHTML = files.map(f => `
+      <div onclick="loadFileIntoEditor('${esc(f.name)}')"
+           style="padding:9px 14px;cursor:pointer;border-bottom:1px solid var(--border);
+                  display:flex;align-items:center;justify-content:space-between;
+                  background:${f.name===currentAdminFile?'var(--accent-glow)':'transparent'};
+                  transition:background 0.1s;"
+           onmouseover="this.style.background='var(--bg3)'"
+           onmouseout="this.style.background='${f.name===currentAdminFile?'var(--accent-glow)':'transparent'}'">
+        <div>
+          <div style="font-size:12px;font-weight:500;color:${f.missing?'var(--text3)':'var(--text)'};">${esc(f.name)}</div>
+          <div style="font-size:10px;color:var(--text3);">${f.missing ? 'not found' : f.lines+' lines · '+f.size_kb+'kb'}</div>
+        </div>
+        ${f.missing ? '' : '<div style="font-size:10px;color:var(--text3);">'+esc(f.modified)+'</div>'}
+      </div>`).join('');
+  } catch(e){ console.error(e); }
+}
+
+async function loadFileIntoEditor(filename) {
+  if(!filename) return;
+  currentAdminFile = filename;
+  document.getElementById('admin-file').value = filename;
+  document.getElementById('editor-filename').textContent = filename;
+  document.getElementById('editor-reload').style.display = '';
+  document.getElementById('editor-save').style.display = '';
+  document.getElementById('editor-status').textContent = 'Loading...';
+  try {
+    const r = await fetch(`${API}/api/admin/file?file=${encodeURIComponent(filename)}`);
+    const d = await r.json();
+    if(d.error){ document.getElementById('editor-status').textContent = 'Error: '+d.error; return; }
+    document.getElementById('code-editor').value = d.content || '';
+    const lines = (d.content||'').split('\n').length;
+    document.getElementById('editor-status').textContent = `${lines} lines · ${filename}`;
+    loadFileList(); // refresh to highlight selected
+  } catch(e){
+    document.getElementById('editor-status').textContent = 'Failed to load: '+e.message;
+  }
+}
+
+async function saveFileDirectly() {
+  if(!currentAdminFile){ notify('No file selected','error'); return; }
+  const content = document.getElementById('code-editor').value;
+  document.getElementById('editor-status').textContent = 'Saving...';
+  try {
+    const r = await fetch(`${API}/api/admin/file`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({file: currentAdminFile, content})
+    });
+    const d = await r.json();
+    if(d.error){ notify(d.error,'error'); return; }
+    document.getElementById('editor-status').textContent = 'Saved ✓ — '+new Date().toLocaleTimeString();
+    notify(`${currentAdminFile} saved`);
+  } catch(e){ notify('Save failed: '+e.message,'error'); }
+}
+
+function editorKeydown(e) {
+  // Tab key inserts spaces instead of changing focus
+  if(e.key === 'Tab') {
+    e.preventDefault();
+    const ta = e.target;
+    const start = ta.selectionStart;
+    const end   = ta.selectionEnd;
+    ta.value = ta.value.slice(0,start) + '    ' + ta.value.slice(end);
+    ta.selectionStart = ta.selectionEnd = start + 4;
+  }
+  // Ctrl+S saves
+  if((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    saveFileDirectly();
+  }
+}
+
+function quickEdit(file, instruction) {
+  document.getElementById('admin-file').value = file;
+  document.getElementById('admin-instruction').value = instruction;
+  loadFileIntoEditor(file);
+  go('admin');
+  runLLMEdit();
+}
+
+async function runLLMEdit() {
+  const file = document.getElementById('admin-file').value;
+  const instruction = document.getElementById('admin-instruction').value.trim();
+  if(!instruction){ notify('Enter an instruction first','error'); return; }
+
+  document.getElementById('admin-btn').disabled = true;
+  document.getElementById('admin-task').style.display = 'block';
+  document.getElementById('diff-content').style.display = 'none';
+  document.getElementById('diff-empty').style.display = 'block';
+
+  try {
+    const r = await fetch(`${API}/api/admin/llm-edit`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({file, instruction, model: document.getElementById('admin-model').value})
+    });
+    const {task_id} = await r.json();
+    listenTask(task_id,
+      (step,pct)=>{ document.getElementById('admin-step').textContent=step; document.getElementById('admin-bar').style.width=pct+'%'; },
+      (d)=>{
+        document.getElementById('admin-btn').disabled=false;
+        document.getElementById('admin-task').style.display='none';
+        pendingEdit = d;
+        document.getElementById('diff-empty').style.display='none';
+        document.getElementById('diff-content').style.display='block';
+        document.getElementById('diff-title').textContent=`Proposed changes — ${d.filename}`;
+        document.getElementById('diff-before').textContent = (d.original||'').slice(0,3000);
+        document.getElementById('diff-after').textContent  = (d.proposed||'').slice(0,3000);
+        notify('Edit ready — review before applying');
+      },
+      (msg)=>{ document.getElementById('admin-btn').disabled=false; document.getElementById('admin-task').style.display='none'; notify(msg,'error'); }
+    );
+  } catch(e){ document.getElementById('admin-btn').disabled=false; notify('Server error','error'); }
+}
+
+async function applyEdit() {
+  if(!pendingEdit){ notify('No pending edit','error'); return; }
+  try {
+    const r = await fetch(`${API}/api/admin/file`,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({file: pendingEdit.filename, content: pendingEdit.proposed})
+    });
+    const d = await r.json();
+    notify(d.message || 'File saved!');
+    pendingEdit = null;
+    document.getElementById('diff-content').style.display='none';
+    document.getElementById('diff-empty').style.display='block';
+    document.getElementById('diff-empty').textContent='Changes applied. A backup was created in backups/';
+  } catch(e){ notify('Save failed: '+e.message,'error'); }
+}
+
+function discardEdit(){ pendingEdit=null; document.getElementById('diff-content').style.display='none'; document.getElementById('diff-empty').style.display='block'; }
+function copyProposed(){ if(pendingEdit) { navigator.clipboard.writeText(pendingEdit.proposed).catch(()=>{}); notify('Copied to clipboard'); }}
+
+// ── Theme Customizer ─────────────────────────────────────────────────────────
+
+const THEME_VARS = [
+  '--bg','--bg2','--bg3','--bg4',
+  '--border','--border2',
+  '--text','--text2','--text3',
+  '--accent','--green','--amber','--red','--purple','--teal',
+];
+const DIM_VARS = ['--accent','--green','--amber','--red','--purple','--teal'];
+const THEME_KEY = 'tpm_theme';
+
+const THEME_PRESETS = {
+  'Midnight Blue': {
+    '--bg':'#080a0f','--bg2':'#0e1117','--bg3':'#141820','--bg4':'#1c2230',
+    '--border':'#1e2637','--border2':'#2a3650',
+    '--text':'#dce4f5','--text2':'#7d8fa8','--text3':'#404e65',
+    '--accent':'#5b9cf6','--green':'#34d399','--amber':'#fbbf24','--red':'#f87171',
+    '--purple':'#a78bfa','--teal':'#2dd4bf',
+    '--font':"'Syne',sans-serif",'--mono':"'DM Mono',monospace",
+  },
+  'Obsidian Ember': {
+    '--bg':'#0c0a09','--bg2':'#1a1613','--bg3':'#231e1a','--bg4':'#2e2822',
+    '--border':'#3a312a','--border2':'#504537',
+    '--text':'#f5ede4','--text2':'#a8957f','--text3':'#5e5244',
+    '--accent':'#e87b35','--green':'#59c96a','--amber':'#e8b74a','--red':'#e85858',
+    '--purple':'#c487e8','--teal':'#4abfb0',
+    '--font':"'Syne',sans-serif",'--mono':"'DM Mono',monospace",
+  },
+  'Arctic Frost': {
+    '--bg':'#f4f6f9','--bg2':'#ffffff','--bg3':'#ebeef3','--bg4':'#dce1e9',
+    '--border':'#d0d5de','--border2':'#b8bfcc',
+    '--text':'#1a1f2e','--text2':'#5a6376','--text3':'#8c95a8',
+    '--accent':'#2563eb','--green':'#16a34a','--amber':'#d97706','--red':'#dc2626',
+    '--purple':'#7c3aed','--teal':'#0d9488',
+    '--font':"'Syne',sans-serif",'--mono':"'DM Mono',monospace",
+  },
+  'Cyberpunk': {
+    '--bg':'#0a0014','--bg2':'#120022','--bg3':'#1a0032','--bg4':'#230045',
+    '--border':'#2d1058','--border2':'#451880',
+    '--text':'#e8d5ff','--text2':'#9678c4','--text3':'#5a3d7a',
+    '--accent':'#ff2ecb','--green':'#00ff87','--amber':'#ffe033','--red':'#ff3355',
+    '--purple':'#bf5af2','--teal':'#00e5ff',
+    '--font':"'Syne',sans-serif",'--mono':"'JetBrains Mono',monospace",
+  },
+  'Forest': {
+    '--bg':'#0b110d','--bg2':'#111a14','--bg3':'#172219','--bg4':'#1e2c21',
+    '--border':'#263a29','--border2':'#345038',
+    '--text':'#c8e6cc','--text2':'#6d9a73','--text3':'#3e5c42',
+    '--accent':'#3ddc84','--green':'#4ade80','--amber':'#facc15','--red':'#f87171',
+    '--purple':'#a78bfa','--teal':'#5eead4',
+    '--font':"'Syne',sans-serif",'--mono':"'Fira Code',monospace",
+  },
+  'Warm Slate': {
+    '--bg':'#111113','--bg2':'#19191d','--bg3':'#212126','--bg4':'#2b2b31',
+    '--border':'#35353d','--border2':'#47474f',
+    '--text':'#ededf0','--text2':'#8e8e9a','--text3':'#55555f',
+    '--accent':'#7c8aff','--green':'#6dd58c','--amber':'#ffc266','--red':'#ff7a7a',
+    '--purple':'#c49cff','--teal':'#5cd3c5',
+    '--font':"'Syne',sans-serif",'--mono':"'DM Mono',monospace",
+  },
+  'Sand Dune': {
+    '--bg':'#f7f3ee','--bg2':'#ffffff','--bg3':'#ece6dd','--bg4':'#ddd4c7',
+    '--border':'#cec3b3','--border2':'#b8aa96',
+    '--text':'#2c2416','--text2':'#6e6050','--text3':'#9c8e7c',
+    '--accent':'#b47028','--green':'#3c8c50','--amber':'#c48820','--red':'#c04040',
+    '--purple':'#7b5ea7','--teal':'#30887c',
+    '--font':"'Syne',sans-serif",'--mono':"'IBM Plex Mono',monospace",
+  },
+};
+
+function setTV(prop, value) {
+  // Set the CSS variable on :root
+  document.documentElement.style.setProperty(prop, value);
+
+  // Also update derived dim vars
+  if (DIM_VARS.includes(prop)) {
+    document.documentElement.style.setProperty(prop + '-dim', value + '18');
+    if (prop === '--accent') {
+      document.documentElement.style.setProperty('--accent-glow', value + '1e');
+    }
+  }
+  // Mirror to --bg5 / --border3 / --text4
+  if (prop === '--bg4') document.documentElement.style.setProperty('--bg5', value);
+  if (prop === '--border2') document.documentElement.style.setProperty('--border3', value);
+  if (prop === '--text3') document.documentElement.style.setProperty('--text4', value);
+
+  // Sync color picker ↔ hex input
+  const cleanProp = prop.replace('--','');
+  const colorEl = document.getElementById('tc-' + cleanProp);
+  const hexEl   = document.getElementById('th-' + cleanProp);
+  if (colorEl && colorEl.value !== value) colorEl.value = value;
+  if (hexEl   && hexEl.value !== value)   hexEl.value = value;
+
+  saveTheme();
+}
+
+function saveTheme() {
+  const saved = {};
+  THEME_VARS.forEach(v => {
+    const val = document.documentElement.style.getPropertyValue(v);
+    if (val) saved[v] = val.trim();
+  });
+  // Also save font choices
+  const fontVal = document.documentElement.style.getPropertyValue('--font');
+  const monoVal = document.documentElement.style.getPropertyValue('--mono');
+  if (fontVal) saved['--font'] = fontVal.trim();
+  if (monoVal) saved['--mono'] = monoVal.trim();
+  // Save branding
+  const mark = document.querySelector('.sb-logo-mark');
+  const name = document.querySelector('.sb-logo-name');
+  const sub  = document.querySelector('.sb-logo-sub');
+  if (mark) saved['_logoMark'] = mark.textContent;
+  if (name) saved['_logoName'] = name.textContent;
+  if (sub)  saved['_logoSub']  = sub.textContent;
+  try { localStorage.setItem(THEME_KEY, JSON.stringify(saved)); } catch(e) {}
+}
+
+function loadTheme() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(THEME_KEY));
+    if (!saved) return;
+    Object.entries(saved).forEach(([k, v]) => {
+      if (k.startsWith('--')) {
+        document.documentElement.style.setProperty(k, v);
+        // Also set derived
+        if (DIM_VARS.includes(k)) {
+          document.documentElement.style.setProperty(k + '-dim', v + '18');
+          if (k === '--accent') document.documentElement.style.setProperty('--accent-glow', v + '1e');
+        }
+        if (k === '--bg4') document.documentElement.style.setProperty('--bg5', v);
+        if (k === '--border2') document.documentElement.style.setProperty('--border3', v);
+        if (k === '--text3') document.documentElement.style.setProperty('--text4', v);
+      }
+    });
+    // Branding
+    if (saved._logoMark) { const el = document.querySelector('.sb-logo-mark'); if(el) el.textContent = saved._logoMark; }
+    if (saved._logoName) { const el = document.querySelector('.sb-logo-name'); if(el) el.textContent = saved._logoName; }
+    if (saved._logoSub)  { const el = document.querySelector('.sb-logo-sub');  if(el) el.textContent = saved._logoSub; }
+  } catch(e) {}
+}
+
+function syncThemeUI() {
+  // Populate color pickers and hex inputs from current computed values
+  const cs = getComputedStyle(document.documentElement);
+  THEME_VARS.forEach(v => {
+    const val = cs.getPropertyValue(v).trim();
+    const cleanProp = v.replace('--','');
+    const colorEl = document.getElementById('tc-' + cleanProp);
+    const hexEl   = document.getElementById('th-' + cleanProp);
+    if (colorEl) colorEl.value = val;
+    if (hexEl)   hexEl.value = val;
+  });
+  // Font selects
+  const fontSel = document.getElementById('tc-font');
+  const monoSel = document.getElementById('tc-mono');
+  const fontVal = cs.getPropertyValue('--font').trim();
+  const monoVal = cs.getPropertyValue('--mono').trim();
+  if (fontSel) { for (const o of fontSel.options) { if (fontVal.includes(o.value.split(',')[0].replace(/'/g,''))) { fontSel.value = o.value; break; }}}
+  if (monoSel) { for (const o of monoSel.options) { if (monoVal.includes(o.value.split(',')[0].replace(/'/g,''))) { monoSel.value = o.value; break; }}}
+  // Branding inputs
+  const mark = document.querySelector('.sb-logo-mark');
+  const name = document.querySelector('.sb-logo-name');
+  const sub  = document.querySelector('.sb-logo-sub');
+  const markI = document.getElementById('tc-logomark');
+  const nameI = document.getElementById('tc-logoname');
+  const subI  = document.getElementById('tc-logosub');
+  if (markI && mark) markI.value = mark.textContent;
+  if (nameI && name) nameI.value = name.textContent;
+  if (subI  && sub)  subI.value  = sub.textContent;
+}
+
+function applyPreset(name) {
+  const p = THEME_PRESETS[name];
+  if (!p) return;
+  Object.entries(p).forEach(([k, v]) => {
+    document.documentElement.style.setProperty(k, v);
+    if (DIM_VARS.includes(k)) {
+      document.documentElement.style.setProperty(k + '-dim', v + '18');
+      if (k === '--accent') document.documentElement.style.setProperty('--accent-glow', v + '1e');
+    }
+    if (k === '--bg4') document.documentElement.style.setProperty('--bg5', v);
+    if (k === '--border2') document.documentElement.style.setProperty('--border3', v);
+    if (k === '--text3') document.documentElement.style.setProperty('--text4', v);
+  });
+  syncThemeUI();
+  saveTheme();
+  renderPresets();
+  notify('Applied ' + name + ' theme');
+}
+
+function renderPresets() {
+  const el = document.getElementById('theme-presets');
+  if (!el) return;
+  const cs = getComputedStyle(document.documentElement);
+  const curAccent = cs.getPropertyValue('--accent').trim();
+  const curBg = cs.getPropertyValue('--bg').trim();
+  el.innerHTML = Object.entries(THEME_PRESETS).map(([name, p]) => {
+    const isActive = p['--accent'] === curAccent && p['--bg'] === curBg;
+    return `<button class="preset-chip${isActive?' active':''}" onclick="applyPreset('${name}')">
+      <span class="preset-dot" style="background:${p['--accent']}"></span>${name}
+    </button>`;
+  }).join('');
+}
+
+function resetTheme() {
+  try { localStorage.removeItem(THEME_KEY); } catch(e) {}
+  // Remove all inline style overrides
+  THEME_VARS.concat(['--bg5','--border3','--text4','--font','--mono'])
+    .concat(DIM_VARS.map(v=>v+'-dim'))
+    .concat(['--accent-glow'])
+    .forEach(v => document.documentElement.style.removeProperty(v));
+  // Reset branding
+  document.querySelector('.sb-logo-mark').textContent = 'TPM Command';
+  document.querySelector('.sb-logo-name').textContent = 'Devon O\'Rourke';
+  document.querySelector('.sb-logo-sub').textContent = 'Job Search Command Center';
+  syncThemeUI();
+  renderPresets();
+  notify('Reset to default theme');
+}
+
+function setBranding() {
+  const mark = document.getElementById('tc-logomark').value;
+  const name = document.getElementById('tc-logoname').value;
+  const sub  = document.getElementById('tc-logosub').value;
+  document.querySelector('.sb-logo-mark').textContent = mark;
+  document.querySelector('.sb-logo-name').textContent = name;
+  document.querySelector('.sb-logo-sub').textContent = sub;
+  saveTheme();
+}
+
+function exportThemeCSS() {
+  const cs = getComputedStyle(document.documentElement);
+  const lines = [':root{'];
+  const varMap = {
+    '--bg':'bg','--bg2':'bg2','--bg3':'bg3','--bg4':'bg4',
+    '--border':'border','--border2':'border2',
+    '--text':'text','--text2':'text2','--text3':'text3',
+    '--accent':'accent','--green':'green','--amber':'amber','--red':'red','--purple':'purple','--teal':'teal',
+  };
+  Object.entries(varMap).forEach(([v]) => {
+    lines.push('  ' + v + ':' + cs.getPropertyValue(v).trim() + ';');
+  });
+  // Add derived vars
+  const a = cs.getPropertyValue('--accent').trim();
+  lines.push('  --bg5:' + cs.getPropertyValue('--bg4').trim() + ';');
+  lines.push('  --border3:' + cs.getPropertyValue('--border2').trim() + ';');
+  lines.push('  --text4:' + cs.getPropertyValue('--text3').trim() + ';');
+  lines.push('  --accent-dim:' + a + '18;--accent-glow:' + a + '1e;');
+  DIM_VARS.filter(v=>v!=='--accent').forEach(v => {
+    const c = cs.getPropertyValue(v).trim();
+    lines.push('  ' + v + '-dim:' + c + '18;');
+  });
+  lines.push('  --r:8px;--rl:14px;--rxl:20px;');
+  lines.push('  --font:' + cs.getPropertyValue('--font').trim() + ';');
+  lines.push('  --mono:' + cs.getPropertyValue('--mono').trim() + ';');
+  lines.push('}');
+  const css = lines.join('\n');
+  document.getElementById('theme-css-out').value = css;
+  document.getElementById('theme-export').style.display = 'block';
+  notify('CSS exported — scroll down to copy');
+}
+
+function selectAllCSS() {
+  const ta = document.getElementById('theme-css-out');
+  ta.select();
+  ta.setSelectionRange(0, 99999);
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+
+// Load saved theme immediately
+loadTheme();
+
+// Startup
+checkOllama();
+loadStats();
+loadDashRecent();
+checkDuplicateCompanies();
+setInterval(checkOllama, 30000);
+
+// Sync theme UI when navigating to theme page
+const _origGo2 = go;
+go = function(page) {
+  _origGo2(page);
+  if (page === 'theme') { syncThemeUI(); renderPresets(); }
+};
+
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+flask
+flask-cors
+crewai
+crewai-tools
+requests
+beautifulsoup4
+python-docx
+ollama
+schedule
+playwright

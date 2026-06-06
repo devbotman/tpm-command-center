@@ -1,0 +1,97 @@
+# TPM Command Center — Candidate Profile (EXAMPLE)
+# ===================================================
+# Copy this file to profile.yml and fill in your details.
+# All agents read from profile.yml automatically.
+# profile.yml is in .gitignore — never commit real personal data.
+
+identity:
+  name: Your Name
+  title: Staff Technical Program Manager
+  location: Boston, MA
+  email: you@example.com
+  phone: "555-000-0000"
+
+experience:
+  years: 10
+  current_role: "Staff Technical Program Manager (2020–Present)"
+  summary: |
+    2020 - Present | Staff Technical Program Manager @ Big Tech Co
+    - Led $X.XXM program delivering [outcome]
+    - Removed XXk engineering hours through process re-engineering
+    - Built tooling that reduced deployment time XX%
+    - Delivered executive-level reporting on program status, risks, and solutions
+
+    2018 - 2020 | Senior Program Manager @ Previous Co
+    - Managed cross-functional teams of XX engineers
+    - Launched [product] in [market]
+
+education: |
+  MBA — Your University (YYYY–YYYY)
+  BS Computer Science — Your University (YYYY–YYYY)
+  Certifications: PMP, SAFe, etc.
+
+skills:
+  technical:
+    - E2E Architecture
+    - 5G / Telecom          # customize to your domain
+    - GCP
+    - AWS
+    - Cloud Infrastructure
+    - CI/CD
+    - Agile / SAFe
+    - SQL
+    - Python
+    - JIRA
+    - Tableau
+  soft:
+    - Stakeholder Management
+    - Executive Reporting
+    - Cross-Functional Leadership
+    - Strategic Planning
+    - Risk Management
+    - Vendor Management
+
+job_search:
+  # Locations to keep — jobs outside these are filtered out
+  preferred_locations:
+    - boston
+    - ma
+    - massachusetts
+    - remote
+    - hybrid
+    - cambridge
+    - waltham
+    # add your own cities here
+
+  # Salary floor — jobs below this are flagged (not removed)
+  salary_floor: 130000
+  salary_target_min: 150000
+  salary_target_max: 200000
+
+  # Companies of highest interest (get score bonus in scout agent)
+  target_companies:
+    - google
+    - amazon
+    - microsoft
+    - meta
+    - apple
+    # add your own target companies
+
+  # LinkedIn / Google Jobs search queries
+  search_queries:
+    - technical program manager
+    - staff technical program manager
+    - engineering program manager
+    - associate director program management
+
+  # Job titles to accept during ATS scraping
+  target_titles:
+    - technical program manager
+    - staff technical program manager
+    - principal technical program manager
+    - engineering program manager
+    - associate director of program management
+    - director of program management
+    - technical delivery manager
+    - release program manager
+    # add more as needed
