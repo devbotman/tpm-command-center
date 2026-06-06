@@ -197,6 +197,50 @@ def index():
     return send_from_directory(str(BASE_DIR), "dashboard.html")
 
 
+# ── Routes: Recruiters ────────────────────────────────────────────────────────
+
+@app.route("/api/recruiters", methods=["GET"])
+def get_recruiters():
+    company = request.args.get("company", "")
+    con = get_db()
+    try:
+        con.execute("""
+            CREATE TABLE IF NOT EXISTS recruiters (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                company TEXT, domain TEXT, name TEXT,
+                first_name TEXT, last_name TEXT, email TEXT,
+                email_status TEXT, title TEXT, linkedin_url TEXT,
+                source TEXT, confidence INTEGER, found_date TEXT,
+                UNIQUE(company, email)
+            )
+        """)
+        sql = "SELECT * FROM recruiters WHERE 1=1"
+        params = []
+        if company:
+            sql += " AND company LIKE ?"; params.append(f"%{company}%")
+        sql += " ORDER BY confidence DESC, found_date DESC"
+        rows = rows_to_list(con.execute(sql, params).fetchall())
+        con.close()
+        return jsonify(rows)
+    except Exception as e:
+        con.close()
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/recruiters/run", methods=["POST"])
+def trigger_recruiter_lookup():
+    """Trigger recruiter enrichment for a specific company or top unscraped."""
+    d = request.json or {}
+    company = d.get("company")
+    limit   = d.get("limit", 10)
+    try:
+        from recruiter_lookup import run as run_recruiters
+        saved = run_recruiters(company_filter=company, limit=limit, verbose=False)
+        return jsonify({"status": "ok", "saved": saved})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 # ── Routes: Jobs ──────────────────────────────────────────────────────────────
 
 @app.route("/api/jobs", methods=["GET"])
@@ -209,6 +253,8 @@ def get_jobs():
         sql += " AND status=?"; params.append(status)
     if search:
         sql += " AND (company LIKE ? OR title LIKE ?)"; params += [f"%{search}%", f"%{search}%"]
+    # Exclude jobs with a confirmed salary ceiling below $170k (keep nulls)
+    sql += " AND (salary_max IS NULL OR salary_max = 0 OR salary_max >= 170000)"
     sql += " ORDER BY found_date DESC, id DESC"
     con = get_db()
     rows = rows_to_list(con.execute(sql, params).fetchall())

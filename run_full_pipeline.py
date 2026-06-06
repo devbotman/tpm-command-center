@@ -119,12 +119,20 @@ def main():
 
     # Step 5: Auto-score (optional, requires Ollama running)
     if args.score:
-        print("\n  Step 4: Scoring new jobs...\n")
+        print("\n  Step 5: Scoring new jobs...\n")
         try:
             from scorer import score_new_jobs
             score_new_jobs(limit=args.score_limit, verbose=True)
         except Exception as e:
             print(f"  Scorer error: {e}")
+
+    # Step 6: Recruiter lookup (Hunter.io + Google/LinkedIn)
+    print("\n  Step 6: Recruiter & hiring manager lookup...\n")
+    try:
+        from recruiter_lookup import run as run_recruiters
+        run_recruiters(limit=20, verbose=True)
+    except Exception as e:
+        print(f"  Recruiter lookup error: {e}")
 
     elapsed = time.time() - t_start
     print(f"\n{'='*55}")

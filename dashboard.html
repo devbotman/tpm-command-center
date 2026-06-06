@@ -267,6 +267,11 @@ textarea.edit-box{font-family:var(--mono);font-size:12px;line-height:1.8;min-hei
       <svg viewBox="0 0 15 15" fill="currentColor"><path d="M1 2h13v11H1V2zm0 0l6.5 5.5L14 2"/></svg>
       Cover Letters
     </button>
+    <button class="nav-btn" onclick="go('recruiters')">
+      <svg viewBox="0 0 15 15" fill="currentColor"><circle cx="7.5" cy="5" r="3" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M1 14c0-3.3 2.9-6 6.5-6s6.5 2.7 6.5 6" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+      Recruiters
+      <span class="nav-badge" id="nb-recruiters" style="display:none">0</span>
+    </button>
     <div class="sb-section">Tools</div>
     <button class="nav-btn" onclick="go('chat')">
       <svg viewBox="0 0 15 15" fill="currentColor"><path d="M1 1h13v9H8l-4 4V10H1V1z" stroke="currentColor" stroke-width="1" fill="none"/></svg>
@@ -346,6 +351,31 @@ textarea.edit-box{font-family:var(--mono);font-size:12px;line-height:1.8;min-hei
     <div class="flex gap mb"><div class="card-hd" style="margin:0">Recent applications</div><button class="btn btn-g btn-sm ml" onclick="go('tracker')">View all</button></div>
     <table class="tbl"><thead><tr><th>Company</th><th>Role</th><th>Date</th><th>Status</th><th></th></tr></thead>
     <tbody id="dash-tbody"></tbody></table>
+  </div>
+</div>
+
+<!-- ─ RECRUITERS ─ -->
+<div id="page-recruiters" class="page">
+  <div class="ph">
+    <div class="ph-left"><h1>Recruiters & Hiring Managers</h1><p>Contacts found via Hunter.io and LinkedIn search</p></div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <input id="rec-search" type="text" placeholder="Filter by company..." class="search-box" oninput="filterRecruiters()" style="width:200px;">
+      <button class="btn btn-p btn-sm" onclick="runRecruiterLookup()">+ Enrich More</button>
+    </div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="tbl">
+      <thead><tr>
+        <th>Company</th>
+        <th>Name</th>
+        <th>Title</th>
+        <th>Email</th>
+        <th>LinkedIn</th>
+        <th>Confidence</th>
+        <th>Source</th>
+      </tr></thead>
+      <tbody id="rec-tbody"><tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text3)">Loading...</td></tr></tbody>
+    </table>
   </div>
 </div>
 
@@ -1025,6 +1055,7 @@ function go(page) {
   });
   if(page==='dashboard') { loadStats(); loadDashRecent(); checkDuplicateCompanies(); }
   if(page==='tracker') loadApps();
+  if(page==='recruiters') loadRecruiters();
   if(page==='resumes') loadResumes();
   if(page==='covers-lib') loadCovers();
   if(page==='admin') loadFileList();
@@ -1716,6 +1747,75 @@ function tailorFromPreview(){
 function prepFromPreview(){
   if(!currentPreviewJob) return;
   prepInterviewFor(currentPreviewJob.company||'', currentPreviewJob.title||'', currentPreviewJob.url||'');
+}
+
+// ── Recruiters ──
+let _allRecruiters = [];
+
+async function loadRecruiters() {
+  const res = await fetch('/api/recruiters');
+  _allRecruiters = await res.json();
+  const badge = document.getElementById('nb-recruiters');
+  if (_allRecruiters.length > 0) {
+    badge.textContent = _allRecruiters.length;
+    badge.style.display = '';
+  }
+  renderRecruiters(_allRecruiters);
+}
+
+function filterRecruiters() {
+  const q = document.getElementById('rec-search').value.toLowerCase();
+  const filtered = q ? _allRecruiters.filter(r =>
+    (r.company||'').toLowerCase().includes(q) ||
+    (r.name||'').toLowerCase().includes(q) ||
+    (r.title||'').toLowerCase().includes(q)
+  ) : _allRecruiters;
+  renderRecruiters(filtered);
+}
+
+function renderRecruiters(rows) {
+  const tbody = document.getElementById('rec-tbody');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text3)">No recruiters found yet. Click "+ Enrich More" to start.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(r => {
+    const conf = r.confidence || 0;
+    const confColor = conf >= 90 ? '#2da44e' : conf >= 70 ? '#d29922' : '#888';
+    const emailHtml = r.email
+      ? `<a href="mailto:${r.email}" style="color:var(--accent)">${r.email}</a>`
+      : '<span style="color:var(--text3)">—</span>';
+    const liHtml = r.linkedin_url
+      ? `<a href="${r.linkedin_url}" target="_blank" style="color:var(--accent)">View</a>`
+      : '<span style="color:var(--text3)">—</span>';
+    const srcBadge = r.source === 'hunter.io'
+      ? '<span style="background:#6e40c9;color:#fff;padding:2px 6px;border-radius:4px;font-size:11px">Hunter</span>'
+      : '<span style="background:#1a7f37;color:#fff;padding:2px 6px;border-radius:4px;font-size:11px">LinkedIn</span>';
+    return `<tr>
+      <td><strong>${r.company||''}</strong></td>
+      <td>${r.name||''}</td>
+      <td style="color:var(--text2);font-size:12px">${r.title||''}</td>
+      <td>${emailHtml}</td>
+      <td>${liHtml}</td>
+      <td style="color:${confColor};font-weight:600">${conf ? conf+'%' : '—'}</td>
+      <td>${srcBadge}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function runRecruiterLookup() {
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = 'Running...';
+  try {
+    const res = await fetch('/api/recruiters/run', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({limit:15})});
+    const d = await res.json();
+    notify(`Recruiter lookup complete — ${d.saved||0} new contacts found`);
+    await loadRecruiters();
+  } catch(e) {
+    notify('Recruiter lookup failed: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = '+ Enrich More';
+  }
 }
 
 async function loadApps() {

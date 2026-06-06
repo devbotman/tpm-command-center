@@ -224,8 +224,8 @@
       "location_key": "location.name",
       "url_template": "https://boards.greenhouse.io/constantcontact/jobs/{id}"
     },
-    "last_scraped": "2026-05-08",
-    "job_count": 8,
+    "last_scraped": "2026-06-06",
+    "job_count": 9,
     "discovery": {
       "source": "known_ma_companies",
       "sector": "Marketing Tech",
@@ -261,9 +261,12 @@
   "akamai": {
     "name": "Akamai",
     "added": "2026-03-15",
-    "career_url": "https://akamaicareers.inflightcloud.com/search",
+    "career_url": "https://jobs.akamai.com/en/sites/CX_1/jobs",
     "platform": "generic",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": "2026-06-06",
     "job_count": 1,
     "discovery": {
@@ -465,9 +468,12 @@
   "fidelity_investments": {
     "name": "Fidelity Investments",
     "added": "2026-03-15",
-    "career_url": "https://jobs.fidelity.com/search-jobs",
+    "career_url": "https://jobs.fidelity.com/en/jobs/?keyword=technical+program+manager",
     "platform": "generic",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": null,
     "job_count": 0,
     "discovery": {
@@ -766,8 +772,8 @@
       "platform": "generic",
       "needs_playwright": true
     },
-    "last_scraped": "2026-05-06",
-    "job_count": 3,
+    "last_scraped": "2026-06-06",
+    "job_count": 4,
     "discovery": {
       "source": "llm_discovery",
       "sector": "ERP/Suite",
@@ -784,8 +790,8 @@
       "platform": "generic",
       "needs_playwright": true
     },
-    "last_scraped": "2026-05-08",
-    "job_count": 11,
+    "last_scraped": "2026-06-06",
+    "job_count": 15,
     "discovery": {
       "source": "llm_discovery",
       "sector": "Life Sciences IT",
@@ -1053,9 +1059,12 @@
   "rsa_security": {
     "name": "RSA Security",
     "added": "2026-03-29",
-    "career_url": null,
-    "platform": null,
-    "platform_cfg": null,
+    "career_url": "https://www.rsa.com/en/contact-us/careers",
+    "platform": "generic",
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": null,
     "job_count": 0,
     "discovery": {
@@ -1147,7 +1156,7 @@
   "enernoc": {
     "name": "EnerNOC",
     "added": "2026-04-04",
-    "career_url": "https://careers.enernoc.com",
+    "career_url": "https://www.enel.com/en/careers.html",
     "platform": "generic",
     "platform_cfg": {
       "platform": "generic",
@@ -1183,9 +1192,12 @@
   "cogo_labs": {
     "name": "Cogo Labs",
     "added": "2026-04-04",
-    "career_url": null,
-    "platform": null,
-    "platform_cfg": null,
+    "career_url": "https://cogolabs.com/careers",
+    "platform": "generic",
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": null,
     "job_count": 0,
     "discovery": {
@@ -1420,24 +1432,6 @@
       "reason": "LLM-suggested MA company in Boston"
     }
   },
-  "cogito": {
-    "name": "Cogito",
-    "added": "2026-04-11",
-    "career_url": "https://www.cogitocorp.com/careers",
-    "platform": "generic",
-    "platform_cfg": {
-      "platform": "generic",
-      "needs_playwright": true
-    },
-    "last_scraped": null,
-    "job_count": 0,
-    "discovery": {
-      "source": "market_signals",
-      "sector": "",
-      "hq": "Boston",
-      "reason": "Product launch of AI-powered mental health platform."
-    }
-  },
   "formlabs": {
     "name": "Formlabs",
     "added": "2026-04-11",
@@ -1481,24 +1475,6 @@
       "reason": "LLM-suggested MA company in Peabody"
     }
   },
-  "bluefin_payment_systems": {
-    "name": "Bluefin Payment Systems",
-    "added": "2026-04-13",
-    "career_url": "https://careers.bluefinsw.com",
-    "platform": "generic",
-    "platform_cfg": {
-      "platform": "generic",
-      "needs_playwright": true
-    },
-    "last_scraped": null,
-    "job_count": 0,
-    "discovery": {
-      "source": "llm_discovery",
-      "sector": "Fintech",
-      "hq": "Braintree",
-      "reason": "LLM-suggested MA company in Braintree"
-    }
-  },
   "commvault": {
     "name": "Commvault",
     "added": "2026-04-13",
@@ -1515,8 +1491,8 @@
       "location_key": "location.name",
       "url_template": "https://boards.greenhouse.io/commvault/jobs/{id}"
     },
-    "last_scraped": "2026-05-08",
-    "job_count": 12,
+    "last_scraped": "2026-06-06",
+    "job_count": 13,
     "discovery": {
       "source": "llm_discovery",
       "sector": "Data Protection",
@@ -1899,7 +1875,7 @@
     "location": "Framingham, MA",
     "industry": "Retail Tech / Enterprise Systems",
     "platform": "generic",
-    "career_url": "https://careers.tjx.com/global/en/search-results",
+    "career_url": "https://www.tjx.com/careers",
     "scraper_notes": "Discovery agent skipped. Uses PageUp ATS (not Workday/Greenhouse). Playwright scraper required. URL pattern: careers.tjx.com/global/en/job/{id}. Large enterprise tech org at Framingham HQ.",
     "priority": "medium",
     "platform_cfg": {
@@ -2157,7 +2133,7 @@
   "endurance_international_group": {
     "name": "Endurance International Group",
     "added": "2026-04-13",
-    "career_url": "https://careers.endurance.com",
+    "career_url": "https://www.newfold.com/careers",
     "platform": "generic",
     "platform_cfg": {
       "platform": "generic",
@@ -2226,7 +2202,7 @@
   "talend": {
     "name": "Talend",
     "added": "2026-04-16",
-    "career_url": "https://www.talend.com/about-us/careers/",
+    "career_url": "https://www.qlik.com/us/company/careers",
     "platform": "generic",
     "platform_cfg": {
       "platform": "generic",
@@ -2341,7 +2317,7 @@
       "url_template": "https://boards.greenhouse.io/mindbody/jobs/{id}",
       "board_id": "mindbody"
     },
-    "last_scraped": "2026-05-08",
+    "last_scraped": "2026-06-06",
     "job_count": 5,
     "discovery": {
       "source": "llm_discovery",
@@ -2365,36 +2341,10 @@
       "reason": "LLM-suggested MA company in Weston"
     }
   },
-  "nuance_communications_(previously_mentioned,_but": {
-    "name": "Nuance Communications (previously mentioned, but",
-    "added": "2026-04-17",
-    "career_url": "https://boards.greenhouse.io/nuance",
-    "platform": "greenhouse",
-    "platform_cfg": {
-      "platform": "greenhouse",
-      "api_url": "https://boards-api.greenhouse.io/v1/boards/nuance/jobs?content=true",
-      "api_method": "GET",
-      "api_body": null,
-      "job_path": "jobs[]",
-      "title_key": "title",
-      "id_key": "id",
-      "location_key": "location.name",
-      "url_template": "https://boards.greenhouse.io/nuance/jobs/{id}",
-      "board_id": "nuance"
-    },
-    "last_scraped": null,
-    "job_count": 0,
-    "discovery": {
-      "source": "llm_discovery",
-      "sector": "Healthcare IT",
-      "hq": "Burlington",
-      "reason": "LLM-suggested MA company in Burlington"
-    }
-  },
   "rackspace_technology": {
     "name": "Rackspace Technology",
     "added": "2026-04-17",
-    "career_url": "https://careers.rackspace.com",
+    "career_url": "https://www.rackspace.com/talent",
     "platform": "generic",
     "platform_cfg": {
       "platform": "generic",
@@ -2479,42 +2429,6 @@
       "reason": "LLM-suggested MA company in Boston"
     }
   },
-  "cogito_corporation": {
-    "name": "Cogito Corporation",
-    "added": "2026-04-17",
-    "career_url": "https://careers.cogito.com",
-    "platform": "generic",
-    "platform_cfg": {
-      "platform": "generic",
-      "needs_playwright": true
-    },
-    "last_scraped": null,
-    "job_count": 0,
-    "discovery": {
-      "source": "market_signals",
-      "sector": "",
-      "hq": "Boston",
-      "reason": "Product launch of AI-powered mental health platform requires TPMs for scale."
-    }
-  },
-  "acacia_communications": {
-    "name": "Acacia Communications",
-    "added": "2026-04-18",
-    "career_url": "https://www.acaciacommunications.com/careers`",
-    "platform": "generic",
-    "platform_cfg": {
-      "platform": "generic",
-      "needs_playwright": true
-    },
-    "last_scraped": null,
-    "job_count": 0,
-    "discovery": {
-      "source": "llm_discovery",
-      "sector": "",
-      "hq": "Telecom",
-      "reason": "LLM-suggested MA company in Telecom"
-    }
-  },
   "i365": {
     "name": "i365",
     "added": "2026-04-18",
@@ -2585,7 +2499,7 @@
   "logmein_(now_part_of_kaseya)": {
     "name": "LogMeIn (now part of Kaseya)",
     "added": "2026-04-18",
-    "career_url": "https://careers.logmein.com",
+    "career_url": "https://www.kaseya.com/careers",
     "platform": "generic",
     "platform_cfg": {
       "platform": "generic",
@@ -2603,9 +2517,12 @@
   "illumina": {
     "name": "Illumina",
     "added": "2026-04-18",
-    "career_url": null,
-    "platform": null,
-    "platform_cfg": null,
+    "career_url": "https://www.illumina.com/careers.html",
+    "platform": "generic",
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": null,
     "job_count": 0,
     "discovery": {
@@ -2674,9 +2591,12 @@
   "meredith_corporation": {
     "name": "Meredith Corporation",
     "added": "2026-04-18",
-    "career_url": null,
-    "platform": null,
-    "platform_cfg": null,
+    "career_url": "https://careers.meredith.com",
+    "platform": "generic",
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": null,
     "job_count": 0,
     "discovery": {
@@ -2761,7 +2681,7 @@
   "morphotrust_usa": {
     "name": "MorphoTrust USA",
     "added": "2026-04-18",
-    "career_url": "https://www.morphotrust.com/careers",
+    "career_url": "https://www.idemia.com/careers",
     "platform": "generic",
     "platform_cfg": {
       "platform": "generic",
@@ -2830,21 +2750,6 @@
       "reason": "LLM-suggested MA company in Maynard"
     }
   },
-  "endeca_technologies_(now_part_of_oracle,_but": {
-    "name": "Endeca Technologies (now part of Oracle, but",
-    "added": "2026-04-18",
-    "career_url": null,
-    "platform": null,
-    "platform_cfg": null,
-    "last_scraped": null,
-    "job_count": 0,
-    "discovery": {
-      "source": "llm_discovery",
-      "sector": "",
-      "hq": "Enterprise Software",
-      "reason": "LLM-suggested MA company in Enterprise Software"
-    }
-  },
   "kaspersky_lab_north_america": {
     "name": "Kaspersky Lab North America",
     "added": "2026-04-18",
@@ -2861,24 +2766,6 @@
       "sector": "Cybersecurity",
       "hq": "Waltham",
       "reason": "LLM-suggested MA company in Waltham"
-    }
-  },
-  "akorbi": {
-    "name": "Akorbi",
-    "added": "2026-04-18",
-    "career_url": "http://careers.akorbicorp.com",
-    "platform": "generic",
-    "platform_cfg": {
-      "platform": "generic",
-      "needs_playwright": true
-    },
-    "last_scraped": null,
-    "job_count": 0,
-    "discovery": {
-      "source": "market_signals",
-      "sector": "",
-      "hq": "Marlborough",
-      "reason": "Recent funding round for continued growth in IT services"
     }
   },
   "bose": {
@@ -2977,9 +2864,14 @@
   "waters_corporation": {
     "name": "Waters Corporation",
     "added": "2026-04-18",
-    "career_url": "https://waters.wd5.myworkdayjobs.com/Waters_Careers",
-    "platform": "workday",
-    "platform_cfg": null,
+    "career_url": "https://uscareers-waters.icims.com/jobs/intro",
+    "platform": "icims",
+    "platform_cfg": {
+      "platform": "icims",
+      "intro_url": "https://uscareers-waters.icims.com/jobs/intro",
+      "base_url": "https://uscareers-waters.icims.com",
+      "needs_playwright": false
+    },
     "last_scraped": null,
     "job_count": 0,
     "discovery": {
@@ -2992,9 +2884,20 @@
   "rapid7": {
     "name": "Rapid7",
     "added": "2026-04-18",
-    "career_url": "https://www.rapid7.com/company/careers/",
-    "platform": "generic",
-    "platform_cfg": null,
+    "career_url": "https://boards.greenhouse.io/rapid7",
+    "platform": "greenhouse",
+    "platform_cfg": {
+      "platform": "greenhouse",
+      "api_url": "https://boards-api.greenhouse.io/v1/boards/rapid7/jobs?content=true",
+      "api_method": "GET",
+      "api_body": null,
+      "job_path": "jobs[]",
+      "title_key": "title",
+      "id_key": "id",
+      "location_key": "location.name",
+      "url_template": "https://boards.greenhouse.io/rapid7/jobs/{id}",
+      "board_id": "rapid7"
+    },
     "last_scraped": null,
     "job_count": 0,
     "discovery": {
@@ -3007,9 +2910,19 @@
   "rocket_software": {
     "name": "Rocket Software",
     "added": "2026-04-18",
-    "career_url": "https://boards.greenhouse.io/rocketsoftware",
-    "platform": "greenhouse",
-    "platform_cfg": null,
+    "career_url": "https://jobs.lever.co/rocketsoftware",
+    "platform": "lever",
+    "platform_cfg": {
+      "platform": "lever",
+      "api_url": "https://api.lever.co/v0/postings/rocketsoftware?mode=json",
+      "api_method": "GET",
+      "api_body": null,
+      "job_path": "root[]",
+      "title_key": "text",
+      "id_key": "id",
+      "location_key": "categories.location",
+      "url_template": "https://jobs.lever.co/rocketsoftware/{id}"
+    },
     "last_scraped": null,
     "job_count": 0,
     "discovery": {
@@ -3162,9 +3075,25 @@
   "moderna": {
     "name": "Moderna",
     "added": "2026-04-18",
-    "career_url": "https://modernatx.wd1.myworkdayjobs.com/en-US/M_Careers",
+    "career_url": "https://modernatx.wd1.myworkdayjobs.com/M_tx",
     "platform": "workday",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "workday",
+      "api_url": "https://modernatx.wd1.myworkdayjobs.com/wday/cxs/modernatx/M_tx/jobs",
+      "api_method": "POST",
+      "api_body": {
+        "appliedFacets": {},
+        "limit": 20,
+        "offset": 0,
+        "searchText": "technical program manager"
+      },
+      "session_url": "https://modernatx.wd1.myworkdayjobs.com/M_tx",
+      "job_path": "jobPostings[]",
+      "title_key": "title",
+      "id_key": "externalPath",
+      "location_key": "locationsText",
+      "url_template": "https://modernatx.wd1.myworkdayjobs.com/M_tx{id}"
+    },
     "last_scraped": "2026-06-06",
     "job_count": 0,
     "discovery": {
@@ -3177,9 +3106,25 @@
   "mercury_systems": {
     "name": "Mercury Systems",
     "added": "2026-04-18",
-    "career_url": "https://mrcy.wd5.myworkdayjobs.com/en-US/External",
+    "career_url": "https://mercurysystems.wd5.myworkdayjobs.com/External",
     "platform": "workday",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "workday",
+      "api_url": "https://mercurysystems.wd5.myworkdayjobs.com/wday/cxs/mercurysystems/External/jobs",
+      "api_method": "POST",
+      "api_body": {
+        "appliedFacets": {},
+        "limit": 20,
+        "offset": 0,
+        "searchText": "technical program manager"
+      },
+      "session_url": "https://mercurysystems.wd5.myworkdayjobs.com/External",
+      "job_path": "jobPostings[]",
+      "title_key": "title",
+      "id_key": "externalPath",
+      "location_key": "locationsText",
+      "url_template": "https://mercurysystems.wd5.myworkdayjobs.com/External{id}"
+    },
     "last_scraped": null,
     "job_count": 0,
     "discovery": {
@@ -3280,9 +3225,25 @@
   "cognex": {
     "name": "Cognex",
     "added": "2026-04-18",
-    "career_url": "https://boards.greenhouse.io/cognex",
-    "platform": "greenhouse",
-    "platform_cfg": null,
+    "career_url": "https://cognex.wd1.myworkdayjobs.com/en-US/Cognex_Careers",
+    "platform": "workday",
+    "platform_cfg": {
+      "platform": "workday",
+      "api_url": "https://cognex.wd1.myworkdayjobs.com/wday/cxs/cognex/Cognex_Careers/jobs",
+      "api_method": "POST",
+      "api_body": {
+        "appliedFacets": {},
+        "limit": 20,
+        "offset": 0,
+        "searchText": "technical program manager"
+      },
+      "session_url": "https://cognex.wd1.myworkdayjobs.com/Cognex_Careers",
+      "job_path": "jobPostings[]",
+      "title_key": "title",
+      "id_key": "externalPath",
+      "location_key": "locationsText",
+      "url_template": "https://cognex.wd1.myworkdayjobs.com/Cognex_Careers{id}"
+    },
     "last_scraped": null,
     "job_count": 0,
     "discovery": {
@@ -3401,8 +3362,8 @@
       "url_template": "https://boards.greenhouse.io/cloudflare/jobs/{id}",
       "board_id": "cloudflare"
     },
-    "last_scraped": "2026-05-08",
-    "job_count": 22,
+    "last_scraped": "2026-06-06",
+    "job_count": 23,
     "added": "2026-04-18",
     "discovery": {
       "source": "run_full_pipeline:FIXES"
@@ -3462,8 +3423,8 @@
       "url_template": "https://boards.greenhouse.io/twilio/jobs/{id}",
       "board_id": "twilio"
     },
-    "last_scraped": "2026-05-10",
-    "job_count": 15,
+    "last_scraped": "2026-06-06",
+    "job_count": 17,
     "added": "2026-04-18",
     "discovery": {
       "source": "run_full_pipeline:FIXES"
@@ -3703,7 +3664,7 @@
       "platform": "generic",
       "needs_playwright": true
     },
-    "last_scraped": "2026-05-08",
+    "last_scraped": "2026-06-06",
     "job_count": 10,
     "added": "2026-04-18",
     "discovery": {
@@ -3948,9 +3909,12 @@
   },
   "databricks": {
     "name": "Databricks",
-    "career_url": "https://boards.greenhouse.io/databricks",
-    "platform": "greenhouse",
-    "platform_cfg": null,
+    "career_url": "https://www.databricks.com/company/careers/open-positions",
+    "platform": "generic",
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": "2026-06-06",
     "job_count": 4,
     "added": "2026-04-18",
@@ -4280,8 +4244,8 @@
       "platform": "generic",
       "needs_playwright": true
     },
-    "last_scraped": "2026-05-08",
-    "job_count": 8,
+    "last_scraped": "2026-06-06",
+    "job_count": 9,
     "added": "2026-04-18",
     "discovery": {
       "source": "run_full_pipeline:FIXES"
@@ -4341,8 +4305,8 @@
       "url_template": "https://boards.greenhouse.io/zoominfo/jobs/{id}",
       "board_id": "zoominfo"
     },
-    "last_scraped": "2026-05-08",
-    "job_count": 7,
+    "last_scraped": "2026-06-06",
+    "job_count": 9,
     "added": "2026-04-18",
     "discovery": {
       "source": "run_full_pipeline:FIXES"
@@ -4468,8 +4432,8 @@
       "platform": "generic",
       "needs_playwright": true
     },
-    "last_scraped": "2026-05-08",
-    "job_count": 12,
+    "last_scraped": "2026-06-06",
+    "job_count": 13,
     "added": "2026-04-18",
     "discovery": {
       "source": "run_full_pipeline:FIXES"
@@ -4539,8 +4503,8 @@
       "location_key": "locationsText",
       "url_template": "https://relx.wd3.myworkdayjobs.com/ElsevierJobs{id}"
     },
-    "last_scraped": "2026-05-08",
-    "job_count": 21,
+    "last_scraped": "2026-06-06",
+    "job_count": 22,
     "added": "2026-04-18",
     "discovery": {
       "source": "run_full_pipeline:FIXES"
@@ -4769,9 +4733,12 @@
   },
   "hashicorp": {
     "name": "Hashicorp",
-    "career_url": "https://boards.greenhouse.io/hashicorp",
-    "platform": "greenhouse",
-    "platform_cfg": null,
+    "career_url": "https://www.hashicorp.com/careers",
+    "platform": "generic",
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": null,
     "job_count": 0,
     "added": "2026-04-18",
@@ -4781,9 +4748,12 @@
   },
   "mongodb": {
     "name": "Mongodb",
-    "career_url": "https://boards.greenhouse.io/mongodb",
-    "platform": "greenhouse",
-    "platform_cfg": null,
+    "career_url": "https://www.mongodb.com/careers",
+    "platform": "generic",
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": null,
     "job_count": 0,
     "added": "2026-04-18",
@@ -4793,9 +4763,12 @@
   },
   "elastic": {
     "name": "Elastic",
-    "career_url": "https://jobs.elastic.co",
+    "career_url": "https://jobs.elastic.co/jobs",
     "platform": "generic",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": null,
     "job_count": 0,
     "added": "2026-04-18",
@@ -4805,9 +4778,12 @@
   },
   "confluent": {
     "name": "Confluent",
-    "career_url": "https://boards.greenhouse.io/confluent",
-    "platform": "greenhouse",
-    "platform_cfg": null,
+    "career_url": "https://careers.confluent.io/search/jobs",
+    "platform": "generic",
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": null,
     "job_count": 0,
     "added": "2026-04-18",
@@ -4817,9 +4793,12 @@
   },
   "snowflake": {
     "name": "Snowflake",
-    "career_url": "https://snowflake.wd5.myworkdayjobs.com/en-US/Snowflake_Careers",
-    "platform": "workday",
-    "platform_cfg": null,
+    "career_url": "https://careers.snowflake.com/us/en/search-results",
+    "platform": "generic",
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": "2026-04-20",
     "job_count": 1,
     "added": "2026-04-18",
@@ -5001,8 +4980,8 @@
       "location_key": "locationsText",
       "url_template": "https://cloudera.wd5.myworkdayjobs.com/External_Career{id}"
     },
-    "last_scraped": "2026-05-08",
-    "job_count": 6,
+    "last_scraped": "2026-06-06",
+    "job_count": 7,
     "added": "2026-04-18",
     "discovery": {
       "source": "run_full_pipeline:FIXES"
@@ -5328,8 +5307,8 @@
       "location_key": "categories.location",
       "url_template": "https://jobs.lever.co/spotify/{id}"
     },
-    "last_scraped": "2026-05-08",
-    "job_count": 21,
+    "last_scraped": "2026-06-06",
+    "job_count": 26,
     "added": "2026-04-18",
     "discovery": {
       "source": "run_full_pipeline:FIXES"
@@ -5591,7 +5570,7 @@
       "platform": "generic",
       "needs_playwright": true
     },
-    "last_scraped": "2026-05-08",
+    "last_scraped": "2026-06-06",
     "job_count": 1,
     "added": "2026-04-18",
     "discovery": {
@@ -5825,8 +5804,8 @@
       "platform": "generic",
       "needs_playwright": true
     },
-    "last_scraped": "2026-05-08",
-    "job_count": 3,
+    "last_scraped": "2026-06-06",
+    "job_count": 5,
     "added": "2026-04-18",
     "discovery": {
       "source": "run_full_pipeline:FIXES"
@@ -6525,8 +6504,8 @@
       "ashby_slug": "supabase",
       "url_template": "https://jobs.ashbyhq.com/supabase/{id}"
     },
-    "last_scraped": null,
-    "job_count": 0,
+    "last_scraped": "2026-06-06",
+    "job_count": 1,
     "discovery": {
       "source": "ashby_api",
       "sector": "Dev Tools",
@@ -6565,8 +6544,8 @@
       "ashby_slug": "temporal",
       "url_template": "https://jobs.ashbyhq.com/temporal/{id}"
     },
-    "last_scraped": null,
-    "job_count": 0,
+    "last_scraped": "2026-06-06",
+    "job_count": 4,
     "discovery": {
       "source": "ashby_api",
       "sector": "Dev Infrastructure",
@@ -6585,8 +6564,8 @@
       "ashby_slug": "vanta",
       "url_template": "https://jobs.ashbyhq.com/vanta/{id}"
     },
-    "last_scraped": null,
-    "job_count": 0,
+    "last_scraped": "2026-06-06",
+    "job_count": 5,
     "discovery": {
       "source": "ashby_api",
       "sector": "Security/Compliance",
@@ -6605,8 +6584,8 @@
       "ashby_slug": "anyscale",
       "url_template": "https://jobs.ashbyhq.com/anyscale/{id}"
     },
-    "last_scraped": null,
-    "job_count": 0,
+    "last_scraped": "2026-06-06",
+    "job_count": 1,
     "discovery": {
       "source": "ashby_api",
       "sector": "AI Infrastructure",
@@ -6625,8 +6604,8 @@
       "ashby_slug": "airbyte",
       "url_template": "https://jobs.ashbyhq.com/airbyte/{id}"
     },
-    "last_scraped": null,
-    "job_count": 0,
+    "last_scraped": "2026-06-06",
+    "job_count": 1,
     "discovery": {
       "source": "ashby_api",
       "sector": "Data Integration",
@@ -6658,7 +6637,10 @@
     "name": "Ericsson",
     "career_url": "https://jobs.ericsson.com/search",
     "platform": "generic",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": null,
     "job_count": 0,
     "added": "2026-06-06",
@@ -6670,7 +6652,23 @@
     "name": "Nokia",
     "career_url": "https://nokia.wd3.myworkdayjobs.com/Nokia_External_Career_Site",
     "platform": "workday",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "workday",
+      "api_url": "https://nokia.wd3.myworkdayjobs.com/wday/cxs/nokia/Nokia_External_Career_Site/jobs",
+      "api_method": "POST",
+      "api_body": {
+        "appliedFacets": {},
+        "limit": 20,
+        "offset": 0,
+        "searchText": "technical program manager"
+      },
+      "session_url": "https://nokia.wd3.myworkdayjobs.com/Nokia_External_Career_Site",
+      "job_path": "jobPostings[]",
+      "title_key": "title",
+      "id_key": "externalPath",
+      "location_key": "locationsText",
+      "url_template": "https://nokia.wd3.myworkdayjobs.com/Nokia_External_Career_Site{id}"
+    },
     "last_scraped": null,
     "job_count": 0,
     "added": "2026-06-06",
@@ -6682,7 +6680,18 @@
     "name": "Mavenir",
     "career_url": "https://boards.greenhouse.io/mavenir",
     "platform": "greenhouse",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "greenhouse",
+      "api_url": "https://boards-api.greenhouse.io/v1/boards/mavenir/jobs?content=true",
+      "api_method": "GET",
+      "api_body": null,
+      "job_path": "jobs[]",
+      "title_key": "title",
+      "id_key": "id",
+      "location_key": "location.name",
+      "url_template": "https://boards.greenhouse.io/mavenir/jobs/{id}",
+      "board_id": "mavenir"
+    },
     "last_scraped": null,
     "job_count": 0,
     "added": "2026-06-06",
@@ -6694,7 +6703,23 @@
     "name": "T-Mobile",
     "career_url": "https://tmobile.wd5.myworkdayjobs.com/T-Mobile",
     "platform": "workday",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "workday",
+      "api_url": "https://tmobile.wd5.myworkdayjobs.com/wday/cxs/tmobile/T-Mobile/jobs",
+      "api_method": "POST",
+      "api_body": {
+        "appliedFacets": {},
+        "limit": 20,
+        "offset": 0,
+        "searchText": "technical program manager"
+      },
+      "session_url": "https://tmobile.wd5.myworkdayjobs.com/T-Mobile",
+      "job_path": "jobPostings[]",
+      "title_key": "title",
+      "id_key": "externalPath",
+      "location_key": "locationsText",
+      "url_template": "https://tmobile.wd5.myworkdayjobs.com/T-Mobile{id}"
+    },
     "last_scraped": null,
     "job_count": 0,
     "added": "2026-06-06",
@@ -6706,7 +6731,10 @@
     "name": "Att",
     "career_url": "https://www.att.jobs/search-jobs",
     "platform": "generic",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": null,
     "job_count": 0,
     "added": "2026-06-06",
@@ -6718,7 +6746,10 @@
     "name": "Verizon",
     "career_url": "https://mycareer.verizon.com/jobs/search",
     "platform": "generic",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": null,
     "job_count": 0,
     "added": "2026-06-06",
@@ -6730,9 +6761,20 @@
     "name": "Fastly",
     "career_url": "https://boards.greenhouse.io/fastly",
     "platform": "greenhouse",
-    "platform_cfg": null,
-    "last_scraped": null,
-    "job_count": 0,
+    "platform_cfg": {
+      "platform": "greenhouse",
+      "api_url": "https://boards-api.greenhouse.io/v1/boards/fastly/jobs?content=true",
+      "api_method": "GET",
+      "api_body": null,
+      "job_path": "jobs[]",
+      "title_key": "title",
+      "id_key": "id",
+      "location_key": "location.name",
+      "url_template": "https://boards.greenhouse.io/fastly/jobs/{id}",
+      "board_id": "fastly"
+    },
+    "last_scraped": "2026-06-06",
+    "job_count": 2,
     "added": "2026-06-06",
     "discovery": {
       "source": "run_full_pipeline:FIXES"
@@ -6742,7 +6784,18 @@
     "name": "Spacex",
     "career_url": "https://boards.greenhouse.io/spacex",
     "platform": "greenhouse",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "greenhouse",
+      "api_url": "https://boards-api.greenhouse.io/v1/boards/spacex/jobs?content=true",
+      "api_method": "GET",
+      "api_body": null,
+      "job_path": "jobs[]",
+      "title_key": "title",
+      "id_key": "id",
+      "location_key": "location.name",
+      "url_template": "https://boards.greenhouse.io/spacex/jobs/{id}",
+      "board_id": "spacex"
+    },
     "last_scraped": null,
     "job_count": 0,
     "added": "2026-06-06",
@@ -6754,7 +6807,10 @@
     "name": "Waymo",
     "career_url": "https://waymo.com/joinus/",
     "platform": "generic",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": null,
     "job_count": 0,
     "added": "2026-06-06",
@@ -6766,7 +6822,18 @@
     "name": "Xai",
     "career_url": "https://boards.greenhouse.io/xai",
     "platform": "greenhouse",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "greenhouse",
+      "api_url": "https://boards-api.greenhouse.io/v1/boards/xai/jobs?content=true",
+      "api_method": "GET",
+      "api_body": null,
+      "job_path": "jobs[]",
+      "title_key": "title",
+      "id_key": "id",
+      "location_key": "location.name",
+      "url_template": "https://boards.greenhouse.io/xai/jobs/{id}",
+      "board_id": "xai"
+    },
     "last_scraped": null,
     "job_count": 0,
     "added": "2026-06-06",
@@ -6778,9 +6845,20 @@
     "name": "Together AI",
     "career_url": "https://boards.greenhouse.io/togetherai",
     "platform": "greenhouse",
-    "platform_cfg": null,
-    "last_scraped": null,
-    "job_count": 0,
+    "platform_cfg": {
+      "platform": "greenhouse",
+      "api_url": "https://boards-api.greenhouse.io/v1/boards/togetherai/jobs?content=true",
+      "api_method": "GET",
+      "api_body": null,
+      "job_path": "jobs[]",
+      "title_key": "title",
+      "id_key": "id",
+      "location_key": "location.name",
+      "url_template": "https://boards.greenhouse.io/togetherai/jobs/{id}",
+      "board_id": "togetherai"
+    },
+    "last_scraped": "2026-06-06",
+    "job_count": 2,
     "added": "2026-06-06",
     "discovery": {
       "source": "run_full_pipeline:FIXES"
@@ -6790,7 +6868,10 @@
     "name": "Modal",
     "career_url": "https://modal.com/careers",
     "platform": "generic",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": null,
     "job_count": 0,
     "added": "2026-06-06",
@@ -6802,7 +6883,10 @@
     "name": "Groq",
     "career_url": "https://groq.com/careers/",
     "platform": "generic",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": null,
     "job_count": 0,
     "added": "2026-06-06",
@@ -6814,7 +6898,18 @@
     "name": "Sharkninja",
     "career_url": "https://boards.greenhouse.io/sharkninja",
     "platform": "greenhouse",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "greenhouse",
+      "api_url": "https://boards-api.greenhouse.io/v1/boards/sharkninja/jobs?content=true",
+      "api_method": "GET",
+      "api_body": null,
+      "job_path": "jobs[]",
+      "title_key": "title",
+      "id_key": "id",
+      "location_key": "location.name",
+      "url_template": "https://boards.greenhouse.io/sharkninja/jobs/{id}",
+      "board_id": "sharkninja"
+    },
     "last_scraped": null,
     "job_count": 0,
     "added": "2026-06-06",
@@ -6826,7 +6921,18 @@
     "name": "Imprivata",
     "career_url": "https://boards.greenhouse.io/imprivata",
     "platform": "greenhouse",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "greenhouse",
+      "api_url": "https://boards-api.greenhouse.io/v1/boards/imprivata/jobs?content=true",
+      "api_method": "GET",
+      "api_body": null,
+      "job_path": "jobs[]",
+      "title_key": "title",
+      "id_key": "id",
+      "location_key": "location.name",
+      "url_template": "https://boards.greenhouse.io/imprivata/jobs/{id}",
+      "board_id": "imprivata"
+    },
     "last_scraped": null,
     "job_count": 0,
     "added": "2026-06-06",
@@ -6838,7 +6944,10 @@
     "name": "Virtusa",
     "career_url": "https://www.virtusa.com/careers",
     "platform": "generic",
-    "platform_cfg": null,
+    "platform_cfg": {
+      "platform": "generic",
+      "needs_playwright": true
+    },
     "last_scraped": null,
     "job_count": 0,
     "added": "2026-06-06",
@@ -6850,8 +6959,24 @@
     "name": "Carbon Black / Vmware",
     "career_url": "https://broadcom.wd1.myworkdayjobs.com/External_Career",
     "platform": "workday",
-    "platform_cfg": null,
-    "last_scraped": null,
+    "platform_cfg": {
+      "platform": "workday",
+      "api_url": "https://broadcom.wd1.myworkdayjobs.com/wday/cxs/broadcom/External_Career/jobs",
+      "api_method": "POST",
+      "api_body": {
+        "appliedFacets": {},
+        "limit": 20,
+        "offset": 0,
+        "searchText": "technical program manager"
+      },
+      "session_url": "https://broadcom.wd1.myworkdayjobs.com/External_Career",
+      "job_path": "jobPostings[]",
+      "title_key": "title",
+      "id_key": "externalPath",
+      "location_key": "locationsText",
+      "url_template": "https://broadcom.wd1.myworkdayjobs.com/External_Career{id}"
+    },
+    "last_scraped": "2026-06-06",
     "job_count": 0,
     "added": "2026-06-06",
     "discovery": {
