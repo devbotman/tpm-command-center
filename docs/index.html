@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Devon O'Rourke — Distinguished TPM</title>
+  <meta name="description" content="Staff Technical Program Manager specializing in 5G infrastructure, cloud platform delivery, and E2E program management. Open to Staff+ TPM roles in Boston MA and remote.">
+  <meta property="og:title" content="Devon O'Rourke — Distinguished TPM">
+  <meta property="og:description" content="$8.38M program owner. 90,000 engineering hours saved. 5G, GCP, AWS.">
+  <meta property="og:type" content="website">
+  <style>
+    :root {
+      --bg:       #0d1117;
+      --bg2:      #161b22;
+      --bg3:      #21262d;
+      --border:   #30363d;
+      --accent:   #58a6ff;
+      --accent2:  #3fb950;
+      --purple:   #bc8cff;
+      --amber:    #e3b341;
+      --text:     #e6edf3;
+      --text2:    #8b949e;
+      --text3:    #6e7681;
+      --radius:   10px;
+      --mono:     'SF Mono', 'Fira Code', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,17,23,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 56px;
+    }
+    .nav-logo { font-weight: 700; font-size: 15px; color: var(--text); letter-spacing: -0.3px; }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { color: var(--text2); text-decoration: none; font-size: 14px; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--accent); color: #0d1117; font-weight: 600;
+      font-size: 13px; padding: 7px 18px; border-radius: 6px;
+      text-decoration: none; transition: opacity .2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* ── Hero ── */
+    .hero {
+      max-width: 900px; margin: 0 auto;
+      padding: 96px 40px 80px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 20px; padding: 4px 14px;
+      font-size: 12px; color: var(--accent2); font-weight: 500;
+      margin-bottom: 28px;
+    }
+    .hero-badge::before { content: '●'; font-size: 8px; }
+    h1 {
+      font-size: clamp(36px, 5vw, 58px);
+      font-weight: 800; letter-spacing: -1.5px;
+      line-height: 1.1; margin-bottom: 20px;
+    }
+    h1 .name { color: var(--accent); }
+    .hero-sub {
+      font-size: 18px; color: var(--text2);
+      max-width: 580px; margin: 0 auto 36px;
+    }
+    .hero-sub strong { color: var(--text); }
+    .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent); color: #0d1117; font-weight: 700;
+      padding: 12px 28px; border-radius: 8px; text-decoration: none;
+      font-size: 15px; transition: opacity .2s;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-secondary {
+      background: var(--bg2); color: var(--text); font-weight: 600;
+      padding: 12px 28px; border-radius: 8px; text-decoration: none;
+      font-size: 15px; border: 1px solid var(--border); transition: background .2s;
+    }
+    .btn-secondary:hover { background: var(--bg3); }
+    .btn-secondary svg { vertical-align: middle; margin-right: 6px; }
+
+    /* ── Metrics ── */
+    .metrics {
+      background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 48px 40px;
+    }
+    .metrics-inner {
+      max-width: 900px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 32px;
+    }
+    .metric { text-align: center; }
+    .metric-num {
+      font-size: 38px; font-weight: 800; letter-spacing: -1px;
+      color: var(--accent); line-height: 1;
+    }
+    .metric-label { font-size: 13px; color: var(--text2); margin-top: 6px; }
+
+    /* ── Sections ── */
+    section { max-width: 900px; margin: 0 auto; padding: 80px 40px; }
+    .section-label {
+      font-size: 12px; font-weight: 600; letter-spacing: 1.5px;
+      color: var(--accent2); text-transform: uppercase; margin-bottom: 12px;
+    }
+    h2 { font-size: 32px; font-weight: 800; letter-spacing: -0.8px; margin-bottom: 16px; }
+    .section-sub { font-size: 16px; color: var(--text2); margin-bottom: 48px; max-width: 600px; }
+
+    /* ── Project card ── */
+    .project-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .project-header {
+      padding: 28px 32px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start; gap: 20px;
+    }
+    .project-icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      background: linear-gradient(135deg, #1a4a7a, #0d2a4a);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; flex-shrink: 0;
+    }
+    .project-meta h3 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .project-meta p { color: var(--text2); font-size: 15px; }
+    .project-body { padding: 28px 32px; }
+    .feature-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px;
+    }
+    @media (max-width: 600px) { .feature-grid { grid-template-columns: 1fr; } }
+    .feature {
+      background: var(--bg3); border-radius: 8px; padding: 14px 16px;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .feature-icon { font-size: 18px; flex-shrink: 0; }
+    .feature-text strong { display: block; font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+    .feature-text span { font-size: 12px; color: var(--text2); }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+    .tag {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 20px; padding: 3px 12px; font-size: 12px;
+      font-family: var(--mono); color: var(--text2);
+    }
+    .project-footer {
+      padding: 20px 32px; border-top: 1px solid var(--border);
+      display: flex; gap: 14px; flex-wrap: wrap;
+    }
+
+    /* ── Timeline ── */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .tl-item {
+      display: grid; grid-template-columns: 120px 1fr;
+      gap: 24px; padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .tl-item:last-child { border-bottom: none; }
+    .tl-date { font-size: 12px; color: var(--text3); font-family: var(--mono); padding-top: 4px; }
+    .tl-content h4 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+    .tl-content .tl-company { font-size: 14px; color: var(--accent); margin-bottom: 10px; }
+    .tl-bullets { list-style: none; padding: 0; }
+    .tl-bullets li {
+      font-size: 14px; color: var(--text2); padding: 3px 0 3px 16px;
+      position: relative;
+    }
+    .tl-bullets li::before {
+      content: '→'; position: absolute; left: 0; color: var(--text3); font-size: 12px;
+    }
+    .tl-bullets li strong { color: var(--text); }
+
+    /* ── Skills grid ── */
+    .skills-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;
+    }
+    .skill-group {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px 24px;
+    }
+    .skill-group h4 {
+      font-size: 12px; font-weight: 600; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--text3); margin-bottom: 14px;
+    }
+    .skill-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .skill-pill {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 6px; padding: 4px 12px; font-size: 13px; color: var(--text);
+    }
+    .skill-pill.hi { border-color: var(--accent); color: var(--accent); }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: var(--bg2); border-top: 1px solid var(--border);
+      text-align: center; padding: 80px 40px;
+    }
+    .cta-section h2 { margin-bottom: 12px; }
+    .cta-section p { color: var(--text2); margin-bottom: 36px; }
+    .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 40px; text-align: center;
+      font-size: 13px; color: var(--text3);
+    }
+    footer a { color: var(--text2); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    /* ── Scroll animations ── */
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity .5s, transform .5s; }
+    .fade-in.visible { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-logo">Devon <span>O'Rourke</span></div>
+  <div class="nav-links">
+    <a href="#project">Project</a>
+    <a href="#experience">Experience</a>
+    <a href="#skills">Skills</a>
+  </div>
+  <a href="mailto:orourke.landry@gmail.com" class="nav-cta">Get in touch →</a>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-badge">Open to Staff+ TPM &amp; Associate Director roles</div>
+  <h1>Distinguished <span class="name">Technical<br>Program Manager</span></h1>
+  <p class="hero-sub">
+    10 years delivering <strong>5G infrastructure</strong>, <strong>cloud platform programs</strong>,
+    and <strong>hardware/software systems</strong> at scale — from concept to customer.
+  </p>
+  <div class="hero-actions">
+    <a href="https://www.linkedin.com/in/devonorourke/" target="_blank" class="btn-primary">View LinkedIn →</a>
+    <a href="https://github.com/devbotman/tpm-command-center" target="_blank" class="btn-secondary">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      TPM Command Center
+    </a>
+  </div>
+</div>
+
+<!-- Metrics -->
+<div class="metrics">
+  <div class="metrics-inner">
+    <div class="metric fade-in">
+      <div class="metric-num">$8.38M</div>
+      <div class="metric-label">Program budget owned end-to-end</div>
+    </div>
+    <div class="metric fade-in">
+      <div class="metric-num">90K</div>
+      <div class="metric-label">Engineering hours saved via process re-engineering</div>
+    </div>
+    <div class="metric fade-in">
+      <div class="metric-num">40%</div>
+      <div class="metric-label">Reduction in GCP deployment time</div>
+    </div>
+    <div class="metric fade-in">
+      <div class="metric-num">$200M</div>
+      <div class="metric-label">Vertical product opportunity identified &amp; piloted</div>
+    </div>
+    <div class="metric fade-in">
+      <div class="metric-num">10 yrs</div>
+      <div class="metric-label">Delivering complex technical programs</div>
+    </div>
+  </div>
+</div>
+
+<!-- Project -->
+<section id="project">
+  <div class="section-label fade-in">Featured Project</div>
+  <h2 class="fade-in">TPM Command Center</h2>
+  <p class="section-sub fade-in">
+    A self-hosted job search automation platform — because a Staff TPM automates their own job hunt.
+  </p>
+
+  <div class="project-card fade-in">
+    <div class="project-header">
+      <div class="project-icon">🎯</div>
+      <div class="project-meta">
+        <h3>TPM Command Center</h3>
+        <p>Scrapes 250+ ATS boards, scores jobs with a local LLM, and surfaces ranked matches in a real-time dashboard — all running locally, no subscriptions needed.</p>
+      </div>
+    </div>
+    <div class="project-body">
+      <div class="feature-grid">
+        <div class="feature">
+          <div class="feature-icon">🔍</div>
+          <div class="feature-text">
+            <strong>Multi-ATS Scraping</strong>
+            <span>Greenhouse, Workday (wd1+wd5 via Playwright), Lever, Ashby, Oracle HCM, LinkedIn, Google Jobs, Amazon</span>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🤖</div>
+          <div class="feature-text">
+            <strong>Local LLM Scoring</strong>
+            <span>Ollama llama3.1:8b scores each job 1–10 against your profile with a one-line reason — no API keys</span>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">📊</div>
+          <div class="feature-text">
+            <strong>Real-time Dashboard</strong>
+            <span>Flask + SSE streaming, location-priority sort (MA/Boston first), salary filter, status tracking</span>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🧹</div>
+          <div class="feature-text">
+            <strong>Auto Deduplication</strong>
+            <span>Detects the same job posted across LinkedIn + ATS, keeps the highest-quality source</span>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">📝</div>
+          <div class="feature-text">
+            <strong>Resume Tailoring</strong>
+            <span>LLM generates role-specific resume bullets keyed to the job description's keywords</span>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🏢</div>
+          <div class="feature-text">
+            <strong>250+ Companies</strong>
+            <span>AI labs, 5G/telecom, cloud infra, Boston-area, gaming, streaming — pre-configured ATS URLs</span>
+          </div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Python 3.12</span>
+        <span class="tag">Playwright</span>
+        <span class="tag">Flask + SSE</span>
+        <span class="tag">SQLite</span>
+        <span class="tag">CrewAI</span>
+        <span class="tag">Ollama</span>
+        <span class="tag">YAML config</span>
+        <span class="tag">Vanilla JS</span>
+      </div>
+    </div>
+    <div class="project-footer">
+      <a href="https://github.com/devbotman/tpm-command-center" target="_blank" class="btn-secondary" style="font-size:14px;padding:9px 20px">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:middle;margin-right:6px"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        View on GitHub
+      </a>
+      <a href="https://github.com/devbotman/tpm-command-center#readme" target="_blank" class="btn-secondary" style="font-size:14px;padding:9px 20px">Read the docs →</a>
+    </div>
+  </div>
+</section>
+
+<!-- Experience -->
+<section id="experience" style="border-top:1px solid var(--border)">
+  <div class="section-label fade-in">Career</div>
+  <h2 class="fade-in">Experience</h2>
+  <p class="section-sub fade-in">10 years at Verizon spanning 5G delivery, network ops, and program leadership.</p>
+
+  <div class="timeline">
+    <div class="tl-item fade-in">
+      <div class="tl-date">2020 – Present</div>
+      <div class="tl-content">
+        <h4>Distinguished Technical Program Manager</h4>
+        <div class="tl-company">Verizon · Bellingham, MA</div>
+        <ul class="tl-bullets">
+          <li>Owned end-to-end delivery of an <strong>$8.38M program</strong> that launched a market-disrupting 5G broadband solution</li>
+          <li>Identified and pitched a <strong>$200M vertical product opportunity</strong>; led pilot program to validate revenue potential</li>
+          <li>Removed <strong>90,000 engineering hours</strong> through process re-engineering across six cross-functional teams</li>
+          <li>Built GCP commissioning file generator (SQL) cutting deployment time <strong>40%</strong> (30 min/node saved)</li>
+          <li>API integration eliminating <strong>10+ manual actions per incident</strong>; reduced GCP compute costs 15%</li>
+          <li>Delivered executive-level reporting from engineering to senior leadership on program status, risks, and solutions</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tl-item fade-in">
+      <div class="tl-date">2019 – 2020</div>
+      <div class="tl-content">
+        <h4>Network Operations Manager</h4>
+        <div class="tl-company">Verizon · Boston, MA</div>
+        <ul class="tl-bullets">
+          <li>Directed <strong>8 Network Engineers</strong> — coaching, performance management, and trust-building</li>
+          <li>Activated <strong>5G NR at Gillette Stadium</strong> and Xfinity Center ahead of schedule</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tl-item fade-in">
+      <div class="tl-date">2016 – 2019</div>
+      <div class="tl-content">
+        <h4>Leadership Development Program</h4>
+        <div class="tl-company">Verizon · Boston, MA</div>
+        <ul class="tl-bullets">
+          <li>Rotated through RF Design, Real Estate Management, and Fiber Operations</li>
+          <li>Identified <strong>$400,000 in permit refund credits</strong> owed by City of Boston through data-driven analysis</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Skills -->
+<section id="skills" style="border-top:1px solid var(--border)">
+  <div class="section-label fade-in">Expertise</div>
+  <h2 class="fade-in">Skills</h2>
+  <p class="section-sub fade-in">Technical depth meets program leadership — from RF design to GCP pipelines.</p>
+
+  <div class="skills-grid">
+    <div class="skill-group fade-in">
+      <h4>Program Management</h4>
+      <div class="skill-pills">
+        <span class="skill-pill hi">E2E Delivery</span>
+        <span class="skill-pill hi">Agile / SAFe</span>
+        <span class="skill-pill">Portfolio Mgmt</span>
+        <span class="skill-pill">Risk Management</span>
+        <span class="skill-pill">OKRs / KPIs</span>
+        <span class="skill-pill">Vendor Mgmt</span>
+      </div>
+    </div>
+    <div class="skill-group fade-in">
+      <h4>Domain — 5G / Telecom</h4>
+      <div class="skill-pills">
+        <span class="skill-pill hi">5G NR</span>
+        <span class="skill-pill hi">Network Engineering</span>
+        <span class="skill-pill">RF Design</span>
+        <span class="skill-pill">Fiber Operations</span>
+        <span class="skill-pill">Carrier Infra</span>
+      </div>
+    </div>
+    <div class="skill-group fade-in">
+      <h4>Cloud &amp; Infrastructure</h4>
+      <div class="skill-pills">
+        <span class="skill-pill hi">GCP</span>
+        <span class="skill-pill hi">AWS</span>
+        <span class="skill-pill">Cloud Infra</span>
+        <span class="skill-pill">CI/CD</span>
+        <span class="skill-pill">BigQuery</span>
+        <span class="skill-pill">SQL</span>
+      </div>
+    </div>
+    <div class="skill-group fade-in">
+      <h4>Tooling</h4>
+      <div class="skill-pills">
+        <span class="skill-pill">Python</span>
+        <span class="skill-pill">JIRA / Rally</span>
+        <span class="skill-pill">Tableau</span>
+        <span class="skill-pill">Atlassian Suite</span>
+        <span class="skill-pill">Google Suite</span>
+        <span class="skill-pill">Excel</span>
+      </div>
+    </div>
+    <div class="skill-group fade-in">
+      <h4>Leadership</h4>
+      <div class="skill-pills">
+        <span class="skill-pill hi">Executive Reporting</span>
+        <span class="skill-pill hi">Stakeholder Mgmt</span>
+        <span class="skill-pill">Cross-Functional Teams</span>
+        <span class="skill-pill">Strategic Planning</span>
+        <span class="skill-pill">Mentorship</span>
+      </div>
+    </div>
+    <div class="skill-group fade-in">
+      <h4>Education &amp; Certs</h4>
+      <div class="skill-pills">
+        <span class="skill-pill">MBA · Strayer University</span>
+        <span class="skill-pill">BS CS Eng · UMass Amherst</span>
+        <span class="skill-pill hi">APM Certified</span>
+        <span class="skill-pill hi">POPM Certified</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="section-label fade-in" style="display:inline-block">Available Now</div>
+  <h2 class="fade-in">Looking for Staff+ TPM &amp; Associate Director roles</h2>
+  <p class="fade-in">Boston MA · Remote · Hybrid &nbsp;|&nbsp; 5G · Cloud Infrastructure · E2E Program Delivery &nbsp;|&nbsp; $150k–$200k+</p>
+  <div class="cta-row">
+    <a href="https://www.linkedin.com/in/devonorourke/" target="_blank" class="btn-primary">Connect on LinkedIn →</a>
+    <a href="mailto:orourke.landry@gmail.com" class="btn-secondary">orourke.landry@gmail.com</a>
+    <a href="https://github.com/devbotman/tpm-command-center" target="_blank" class="btn-secondary">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:middle;margin-right:6px"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      GitHub
+    </a>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <p>Devon O'Rourke · Distinguished TPM · Boston, MA ·
+    <a href="https://www.linkedin.com/in/devonorourke/">LinkedIn</a> ·
+    <a href="https://github.com/devbotman">GitHub</a>
+  </p>
+</footer>
+
+<script>
+  // Scroll fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
