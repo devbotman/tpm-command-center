@@ -6654,54 +6654,6 @@
       "reason": "Confirmed on Ashby ATS"
     }
   },
-  "sharkninja": {
-    "name": "Sharkninja",
-    "career_url": "https://boards.greenhouse.io/sharkninja",
-    "platform": "greenhouse",
-    "platform_cfg": null,
-    "last_scraped": null,
-    "job_count": 0,
-    "added": "2026-06-06",
-    "discovery": {
-      "source": "run_full_pipeline:FIXES"
-    }
-  },
-  "imprivata": {
-    "name": "Imprivata",
-    "career_url": "https://boards.greenhouse.io/imprivata",
-    "platform": "greenhouse",
-    "platform_cfg": null,
-    "last_scraped": null,
-    "job_count": 0,
-    "added": "2026-06-06",
-    "discovery": {
-      "source": "run_full_pipeline:FIXES"
-    }
-  },
-  "virtusa": {
-    "name": "Virtusa",
-    "career_url": "https://www.virtusa.com/careers",
-    "platform": "generic",
-    "platform_cfg": null,
-    "last_scraped": null,
-    "job_count": 0,
-    "added": "2026-06-06",
-    "discovery": {
-      "source": "run_full_pipeline:FIXES"
-    }
-  },
-  "carbon_black/vmware": {
-    "name": "Carbon Black / Vmware",
-    "career_url": "https://broadcom.wd1.myworkdayjobs.com/External_Career",
-    "platform": "workday",
-    "platform_cfg": null,
-    "last_scraped": null,
-    "job_count": 0,
-    "added": "2026-06-06",
-    "discovery": {
-      "source": "run_full_pipeline:FIXES"
-    }
-  },
   "ericsson": {
     "name": "Ericsson",
     "career_url": "https://jobs.ericsson.com/search",
@@ -6850,6 +6802,54 @@
     "name": "Groq",
     "career_url": "https://groq.com/careers/",
     "platform": "generic",
+    "platform_cfg": null,
+    "last_scraped": null,
+    "job_count": 0,
+    "added": "2026-06-06",
+    "discovery": {
+      "source": "run_full_pipeline:FIXES"
+    }
+  },
+  "sharkninja": {
+    "name": "Sharkninja",
+    "career_url": "https://boards.greenhouse.io/sharkninja",
+    "platform": "greenhouse",
+    "platform_cfg": null,
+    "last_scraped": null,
+    "job_count": 0,
+    "added": "2026-06-06",
+    "discovery": {
+      "source": "run_full_pipeline:FIXES"
+    }
+  },
+  "imprivata": {
+    "name": "Imprivata",
+    "career_url": "https://boards.greenhouse.io/imprivata",
+    "platform": "greenhouse",
+    "platform_cfg": null,
+    "last_scraped": null,
+    "job_count": 0,
+    "added": "2026-06-06",
+    "discovery": {
+      "source": "run_full_pipeline:FIXES"
+    }
+  },
+  "virtusa": {
+    "name": "Virtusa",
+    "career_url": "https://www.virtusa.com/careers",
+    "platform": "generic",
+    "platform_cfg": null,
+    "last_scraped": null,
+    "job_count": 0,
+    "added": "2026-06-06",
+    "discovery": {
+      "source": "run_full_pipeline:FIXES"
+    }
+  },
+  "carbon_black/vmware": {
+    "name": "Carbon Black / Vmware",
+    "career_url": "https://broadcom.wd1.myworkdayjobs.com/External_Career",
+    "platform": "workday",
     "platform_cfg": null,
     "last_scraped": null,
     "job_count": 0,

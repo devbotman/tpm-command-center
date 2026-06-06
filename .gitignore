@@ -23,9 +23,20 @@ archive/
 .env
 .env.*
 
-# ── Scraped HTML snapshots (may contain session data) ────────────
+# ── Scraped HTML snapshots / session data ────────────────────────
 *_rendered.html
 linkedin_rendered.html
+linkedin_session.json
+linkedin_top_picks.html
+discovery_log.json
+resumes/
+tailored_resumes/
+*.backup_*.json
+*_patch.json
+"dashboard - Copy*.html"
+*.jpg
+*.jsx
+README_v2.md
 
 # ── OS / editor ──────────────────────────────────────────────────
 .DS_Store
